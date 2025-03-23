@@ -1,0 +1,16 @@
+html,
+body,
+#root {
+    height: 100%;
+    min-width: 320px;
+    margin: 0;
+}
+
+:root {
+    --g-color-base-brand: #30aa6e;
+    --g-color-base-selection: #30aa6e;
+    --g-color-text-brand: #30aa6e;
+    --g-color-line-selection: #30aa6e;
+    --color-primary: #30aa6e;
+    --color-primary-dark: #30aa6e;
+}

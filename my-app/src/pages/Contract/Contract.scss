@@ -1,0 +1,145 @@
+@import 'src/styles/variables';
+
+.contract {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px;
+    font-family: sans-serif;
+
+    &__security {
+        margin-top: 24px;
+        text-align: center;
+
+        &-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 24px;
+
+            p {
+                margin: 8px 0 0;
+                font-size: 11px;
+                line-height: 1.4;
+                text-align: left;
+                font-weight: 600;
+            }
+        }
+    }
+
+    &__icon {
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        margin: 0 10px;
+        color: $accent-color;
+    }
+
+    &__contract-data {
+        margin-bottom: 24px;
+        text-align: center;
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: $accent-color;
+        }
+
+        h3 {
+            font-size: 16px;
+            color: $accent-color;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        h3 + p {
+            margin-top: 4px;
+        }
+    }
+
+    &__info {
+        margin-bottom: 24px;
+
+        .__landlord {
+            margin-bottom: 16px;
+        }
+
+        .__security > div {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+
+            p {
+                margin: 0;
+                font-size: 9px;
+            }
+        }
+    }
+
+    &__form {
+        box-sizing: border-box;
+
+        .contract__form-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .contract__input {
+            margin-bottom: 12px;
+            outline: none;
+
+            .g-text-input__control {
+                border-radius: 10px;
+                padding: 20px;
+                font-size: 15px;
+                outline: none;
+                border-width: 1px;
+            }
+        }
+
+        &__checkbox {
+            // Общее оформление (можно дополнить по желанию)
+            margin-top: 16px;
+
+            // Стили для рамки чекбокса
+            .g-checkbox__control {
+                border-color: #30aa6e;
+            }
+
+            // Стили для заливки при checked
+            .g-checkbox__box {
+                background-color: #30aa6e;
+                border-color: #30aa6e;
+            }
+
+            // Когда чекбокс отмечен
+            input:checked + .g-checkbox__control .g-checkbox__box {
+                background-color: #30aa6e;
+                border-color: #30aa6e;
+            }
+
+            // Цвет галочки (если не видно, можно попробовать принудительно задать)
+            .g-icon {
+                color: #fff; // белая галочка поверх зелёного фона
+            }
+        }
+
+        .contract__submit {
+            margin-top: 16px;
+        }
+
+        .contract__log-info {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 8px;
+            color: gray;
+        }
+    }
+}
