@@ -1,0 +1,21 @@
+@import 'src/styles/variables';
+
+.success_page {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    min-height: 100vh;
+
+    &__icon {
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        margin: 0 10px;
+        color: $accent-color;
+    }
+}

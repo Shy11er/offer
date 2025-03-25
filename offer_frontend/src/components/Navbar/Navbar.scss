@@ -1,0 +1,21 @@
+@import '../../styles/variables.scss';
+
+.navbar {
+    background-color: $accent-color;
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 1000;
+
+    & > h1 {
+        text-align: center;
+    }
+}

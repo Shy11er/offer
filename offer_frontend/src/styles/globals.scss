@@ -1,0 +1,19 @@
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+}
+
+.g-root_theme_light,
+.g-root_theme_dark {
+    --g-color-base-brand: #30aa6e !important;
+
+    --g-color-base-brand-hover: #208a56 !important;
+
+    --g-color-base-brand-active: #166e42 !important;
+}
+
+* {
+    font-family: 'Inter', sans-serif;
+}

@@ -1,0 +1,158 @@
+@import 'src/styles/variables';
+
+.contract {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px;
+    font-family: sans-serif;
+
+    &__security {
+        margin-top: 24px;
+        text-align: center;
+
+        &-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 24px;
+
+            p {
+                margin: 8px 0 0;
+                font-size: 11px;
+                letter-spacing: 0;
+                line-height: 15px;
+                text-align: left;
+                font-weight: 600;
+                color: #000;
+            }
+        }
+    }
+
+    &__icon {
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        margin: 0 10px;
+        color: $accent-color;
+    }
+
+    &__contract-data {
+        margin-bottom: 24px;
+        text-align: center;
+        font-weight: 400;
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: $accent-color;
+        }
+
+        h3 {
+            font-size: 13px;
+            color: $accent-color;
+        }
+
+        p {
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        h3 + p {
+            margin-top: 4px;
+        }
+    }
+
+    &__info {
+        margin-bottom: 24px;
+
+        .__landlord {
+            margin-bottom: 16px;
+        }
+
+        .__security > div {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+
+            p {
+                margin: 0;
+                font-size: 9px;
+            }
+        }
+    }
+
+    .contract__checkboxes {
+        margin: 10px 0;
+
+        .contract__checkbox {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            text-align: start;
+            justify-content: flex-start;
+            gap: 5px;
+            padding: 0;
+            font-size: 13px;
+        }
+
+        .contract__checkbox label {
+            margin-left: 5px;
+        }
+    }
+
+    &__form {
+        box-sizing: border-box;
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba($color: #000000, $alpha: 0.7);
+        }
+
+        // .contract__form-title {
+        //     font-size: 16px;
+        //     font-weight: bold;
+        //     text-align: center;
+        //     margin-bottom: 16px;
+        // }
+
+        .contract__input {
+            margin-bottom: 12px;
+            outline: none;
+            font-size: 20px;
+
+            .g-text-input__control {
+                border-radius: 10px;
+                outline: none;
+                border-width: 1px;
+            }
+        }
+
+        .contract__submit {
+            margin-top: 16px;
+            color: #fff;
+            width: 70%;
+            height: 45px;
+            font-size: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contract__log-info {
+            font-size: 9px;
+            text-align: center;
+            margin-top: 5px;
+            color: gray;
+        }
+    }
+}
