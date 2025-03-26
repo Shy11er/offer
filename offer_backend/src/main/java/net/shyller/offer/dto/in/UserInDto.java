@@ -24,7 +24,6 @@ public class UserInDto {
     @NotBlank(message = "Пароль не может быть пустым")
     private String password;
 
-    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", timezone = "UTC")
     @Schema(description = "Дата окончания подписки")
     private OffsetDateTime subscriptionExpiresAt;
