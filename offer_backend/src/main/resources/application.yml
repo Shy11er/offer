@@ -4,6 +4,17 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    active: dev
+
+  app:
+    jwt-token:
+      access:
+
+  security:
+    user:
+      password:
+
   datasource:
     driver-class-name: org.postgresql.Driver
     username:
@@ -15,6 +26,7 @@ spring:
     max-lifetime: 120000
     idle-timeout: 60000
     isolate-internal-queries: true
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
@@ -32,3 +44,6 @@ spring:
   web:
     throw-exception-if-no-handler-found: true
 
+
+aes:
+  key:

@@ -236,4 +236,11 @@ public class Contract {
      */
     @Column(name = "date_of_signed")
     private LocalDateTime dateOfSigned;
+
+    /**
+     * Владелец договора.
+     */
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }

@@ -1,8 +1,24 @@
+--liquibase formatted sql
+--changeset Shyller:v1_init
 
+-- Таблица: role
+CREATE TABLE role (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
 
--- Таблица для контрактов
+-- Таблица: user
+CREATE TABLE "user" (
+    id UUID PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    subscription_expires_at TIMESTAMP WITH TIME ZONE,
+    encrypted_password VARCHAR(255)
+);
+
+-- Таблица: contract
 CREATE TABLE contract (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY,
     contract_type VARCHAR(255),
     owner_type VARCHAR(255),
     owner_name VARCHAR(255),
@@ -13,57 +29,50 @@ CREATE TABLE contract (
     ogrn VARCHAR(20),
     inn VARCHAR(20),
     kpp VARCHAR(20),
-    legal_address VARCHAR(255),
+    legal_address TEXT,
     position_of_representative VARCHAR(255),
     document VARCHAR(255),
     email VARCHAR(255),
-    registration_address VARCHAR(255),
-    address VARCHAR(255),
-    square INT,
-    cadastral_number VARCHAR(255),
+    registration_address TEXT,
+    address TEXT,
+    square INTEGER,
+    cadastral_number VARCHAR(100),
     technical_type VARCHAR(255),
-    technical_description VARCHAR(255),
+    technical_description TEXT,
     rent_type VARCHAR(255),
-    rent_price DOUBLE PRECISION,
+    rent_price NUMERIC,
     rent_amount VARCHAR(255),
-    start_date TIMESTAMPTZ,
-    end_date TIMESTAMPTZ,
+    start_date TIMESTAMP WITH TIME ZONE,
+    end_date TIMESTAMP WITH TIME ZONE,
     is_deposit BOOLEAN,
-    deposit_amount DOUBLE PRECISION,
+    deposit_amount NUMERIC,
     deposit_backup VARCHAR(255),
     with_animals BOOLEAN,
-    can_smoke BOOLEAN
+    can_smoke BOOLEAN,
+    date_of_signed TIMESTAMP,
+    user_id UUID,
+    CONSTRAINT fk_contract_user FOREIGN KEY (user_id) REFERENCES "user"(id)
 );
 
--- Таблица для штрафов
+-- Таблица: penalty
 CREATE TABLE penalty (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    reason VARCHAR(255) NOT NULL,
-    amount DOUBLE PRECISION NOT NULL,
+    id UUID PRIMARY KEY,
+    reason TEXT,
+    amount NUMERIC,
     contract_id UUID,
-    FOREIGN KEY (contract_id) REFERENCES contract(id) ON DELETE CASCADE
+    CONSTRAINT fk_penalty_contract FOREIGN KEY (contract_id) REFERENCES contract(id)
 );
 
--- Таблица для ролей
-CREATE TABLE role (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(255) NOT NULL UNIQUE
+CREATE TABLE user_roles (
+    user_id UUID NOT NULL,
+    role_id UUID NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES "user"(id),
+    FOREIGN KEY (role_id) REFERENCES role(id)
 );
 
--- Таблица для пользователей
-CREATE TABLE "user" (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    subscription_expires_at TIMESTAMPTZ,
-    role_id UUID,
-    FOREIGN KEY (role_id) REFERENCES role(id),
-    email VARCHAR(255)
-);
+INSERT INTO role (id, name)
+VALUES
+    (gen_random_uuid(), 'ROLE_PAID_USER'),
+    (gen_random_uuid(), 'ROLE_ADMIN');
 
--- Добавление индексов для повышения производительности
-CREATE INDEX idx_contract_owner_name ON contract(owner_name);
-CREATE INDEX idx_contract_owner_phone ON contract(owner_phone);
-CREATE INDEX idx_penalty_contract_id ON penalty(contract_id);
-CREATE INDEX idx_user_username ON "user"(username);
-CREATE INDEX idx_user_email ON "user"(email);

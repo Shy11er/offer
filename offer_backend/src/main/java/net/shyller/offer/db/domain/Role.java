@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import net.shyller.offer.common.RoleName;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
