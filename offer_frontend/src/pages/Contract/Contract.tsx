@@ -308,7 +308,7 @@ export const Contract: React.FC = () => {
                             onChange={() => setAgreedPolicy(!agreedPolicy)}
                             className={b('checkbox')}
                         >
-                            Я согласен(а) условиям{' '}
+                            Я согласен(а) условиями{' '}
                             <a
                                 href="#"
                                 target="_blank"

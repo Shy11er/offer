@@ -1,10 +1,13 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 
+import {BottomNavbar} from './components/BottomNavbar';
 import {Navbar} from './components/Navbar';
 import {Wrapper} from './components/Wrapper';
+import {Auth} from './pages/Auth';
 import {Contract} from './pages/Contract';
+import {Profile} from './pages/Profile';
 import SuccessPage from './pages/SuccessPage/SuccessPage';
-import { Auth } from './pages/Auth';
+import {UserCreate} from './pages/UserCreate';
 
 const App = () => {
     return (
@@ -16,6 +19,26 @@ const App = () => {
                     element={
                         <Wrapper>
                             <Auth />
+                        </Wrapper>
+                    }
+                />
+
+                <Route
+                    path="/profile"
+                    element={
+                        <Wrapper>
+                            <Profile />
+                            <BottomNavbar />
+                        </Wrapper>
+                    }
+                />
+
+                <Route
+                    path="/profile/add"
+                    element={
+                        <Wrapper>
+                            <UserCreate />
+                            <BottomNavbar />
                         </Wrapper>
                     }
                 />
@@ -37,6 +60,8 @@ const App = () => {
                         </Wrapper>
                     }
                 />
+
+                <Route path="*" element={<Navigate   to="/" replace />} />
             </Routes>
         </BrowserRouter>
     );

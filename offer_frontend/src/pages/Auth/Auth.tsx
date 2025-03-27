@@ -16,9 +16,13 @@ export const Auth: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await login(username, password);
+            const token = await login(username, password);
+            console.log(token);
+
+            localStorage.setItem('token', token);
             toast.success('Вы успешно вошли в систему');
-            navigate('/');
+
+            navigate('/profile');
         } catch (error) {
             toast.error('Ошибка авторизации');
             console.error('Ошибка входа', error);
