@@ -1,0 +1,19 @@
+@import '../../styles/variables.scss';
+
+.user-list {
+    height: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    margin: 30px 0;
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+        margin-top: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-direction: column;
+    }
+}
