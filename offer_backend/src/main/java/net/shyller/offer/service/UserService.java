@@ -79,6 +79,16 @@ public class UserService {
     }
 
     @Transactional
+    public UserDto cancelSubscription(UUID id) {
+        User user = getById(id);
+
+        user.getRoles().removeIf(role -> role.getName().equals(RoleName.ROLE_PAID_USER));
+        user.setSubscriptionExpiresAt(null);
+
+        return mapper.map(userRepository.save(user), UserDto.class);
+    }
+
+    @Transactional
     public void delete(UUID id) {
         User userEntity = getById(id);
         userRepository.delete(userEntity);

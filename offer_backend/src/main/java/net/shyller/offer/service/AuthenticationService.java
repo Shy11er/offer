@@ -25,23 +25,16 @@ public class AuthenticationService {
      *
      * @param request данные пользователя (логин/пароль)
      * */
-    public void authenticate(HttpServletResponse response, SignInRequestDto request) {
+    public String authenticate(HttpServletResponse response, SignInRequestDto request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()
         ));
         var user = userDetailsService.loadUserByUsername(request.getUsername());
 
-        setCookie(response, user);
+        return jwtService.generateToken(user);
     }
 
-    private void setCookie(HttpServletResponse response, UserDetails user) {
-        Cookie cookie = new Cookie(JWT_TOKEN_COOKIE_NAME, jwtService.generateToken(user));
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        response.addCookie(cookie);
-    }
 
     public void logout(HttpServletResponse response) {
         Cookie cookie = new Cookie(JWT_TOKEN_COOKIE_NAME, "");

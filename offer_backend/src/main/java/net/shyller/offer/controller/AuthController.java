@@ -31,7 +31,7 @@ public class AuthController {
             )
     })
     @PostMapping("/login")
-    public void login(HttpServletResponse response, @RequestBody @Valid SignInRequestDto request) {
-        authenticationService.authenticate(response, request);
+    public String login(HttpServletResponse response, @RequestBody @Valid SignInRequestDto request) {
+        return authenticationService.authenticate(response, request);
     }
 }

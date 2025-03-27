@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 @SecurityRequirement(name = "JWT")
 @Tag(name = "Контроллер пользователей", description = "Обрабатывает любые взаимодействия с пользователями.")
 public class UserController {
@@ -132,6 +132,37 @@ public class UserController {
             @PathVariable("id") @Parameter(description = "Идентификатор пользователя", required = true) UUID id,
             @Valid @RequestBody UserInDto userDto) {
         return service.update(id, userDto);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_PAID_USER')")
+    @PatchMapping("/{id}/cancel-subscription")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Отмена подписки")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Подписка отменена",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UserDto.class)
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Ошибка в теле запроса",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorResponseDto.class))
+                            )
+                    }
+            )
+    })
+    public UserDto cancelSubscription(
+            @PathVariable("id") @Parameter(description = "Идентификатор пользователя", required = true) UUID id) {
+        return service.cancelSubscription(id);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
