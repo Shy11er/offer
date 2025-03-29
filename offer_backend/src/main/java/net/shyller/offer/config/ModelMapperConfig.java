@@ -1,10 +1,9 @@
 package net.shyller.offer.config;
 
 import net.shyller.offer.common.RoleName;
+import net.shyller.offer.db.domain.*;
 import net.shyller.offer.db.domain.Object;
-import net.shyller.offer.db.domain.Penalty;
-import net.shyller.offer.db.domain.Role;
-import net.shyller.offer.db.domain.User;
+import net.shyller.offer.dto.ContractDto;
 import net.shyller.offer.dto.ObjectDto;
 import net.shyller.offer.dto.PenaltyDto;
 import net.shyller.offer.dto.UserDto;
@@ -53,6 +52,10 @@ public class ModelMapperConfig {
                                     .orElse(Collections.emptyList()))
                             .map(Object::getPenalties, ObjectDto::setPenalties);
                 });
+
+        modelMapper.createTypeMap(Contract.class, ContractDto.class).addMappings(mapper -> {
+            mapper.map(src -> src.getObject(), ContractDto::setObjectDto);
+        });
 
         return modelMapper;
     }
