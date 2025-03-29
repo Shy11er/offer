@@ -1,0 +1,157 @@
+@import 'src/styles/variables';
+
+.create-object {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 100px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100dvh;
+    overflow-y: auto;
+
+    &__input {
+    }
+
+    &__step {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        text-align: center;
+    }
+
+    &__subtitle {
+        font-size: 13px;
+        color: gray;
+        text-align: center;
+    }
+
+    &__condition_section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    &__condition_section_options {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    &__options {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .g-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 44px;
+            font-size: 16px;
+        }
+    }
+
+    &__next {
+        margin-top: 24px;
+        width: 100%;
+        height: 44px;
+        font-size: 16px;
+        border-radius: 12px;
+        color: white;
+    }
+    &__actions {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 16px;
+
+        button {
+            flex: 1;
+        }
+    }
+
+    &__payment {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__special_conditions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__penalty {
+        display: flex;
+        width: 100%;
+        margin-bottom: 12px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        .g-text-input {
+            flex: 1;
+        }
+    }
+
+    &__penalty-row {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+        width: 100%;
+        margin-bottom: 12px;
+
+        .g-text-input {
+            flex: 1;
+        }
+    }
+
+    &__contract-data {
+        margin-bottom: 24px;
+        text-align: center;
+        font-weight: 400;
+        color: rgba($color: #000000, $alpha: 0.7);
+
+        h1 {
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 13px;
+        }
+
+        p {
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        h3 + p {
+            margin-top: 4px;
+        }
+    }
+}

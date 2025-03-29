@@ -1,0 +1,21 @@
+@import 'src/styles/variables';
+
+.contract-preview {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px;
+    padding-top: 80px;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        justify-content: space-between;
+        margin-bottom: 100px;
+    }
+}

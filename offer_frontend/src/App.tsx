@@ -5,6 +5,9 @@ import {Navbar} from './components/Navbar';
 import {Wrapper} from './components/Wrapper';
 import {Auth} from './pages/Auth';
 import {Contract} from './pages/Contract';
+import {ContractPreview} from './pages/ContractPreview';
+import {CreateObject} from './pages/CreateObject';
+import {Object} from './pages/Object';
 import {Profile} from './pages/Profile';
 import SuccessPage from './pages/SuccessPage/SuccessPage';
 import {UserCreate} from './pages/UserCreate';
@@ -19,6 +22,56 @@ const App = () => {
                     element={
                         <Wrapper>
                             <Auth />
+                        </Wrapper>
+                    }
+                />
+
+                <Route
+                    path="/"
+                    element={
+                        <Wrapper>
+                            <Object />
+                            <BottomNavbar />
+                        </Wrapper>
+                    }
+                />
+
+                <Route
+                    path="/objects/new"
+                    element={
+                        <Wrapper>
+                            <CreateObject />
+                            <BottomNavbar />
+                        </Wrapper>
+                    }
+                />
+
+                <Route
+                    path="/objects/:id/edit"
+                    element={
+                        <Wrapper>
+                            <CreateObject />
+                            <BottomNavbar />
+                        </Wrapper>
+                    }
+                />
+
+                <Route
+                    path="/objects/preview"
+                    element={
+                        <Wrapper>
+                            <ContractPreview />
+                            <BottomNavbar />
+                        </Wrapper>
+                    }
+                />
+
+                <Route
+                    path="/objects/preview/:id"
+                    element={
+                        <Wrapper>
+                            <ContractPreview />
+                            <BottomNavbar />
                         </Wrapper>
                     }
                 />
@@ -61,7 +114,7 @@ const App = () => {
                     }
                 />
 
-                <Route path="*" element={<Navigate   to="/" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>
     );

@@ -4,8 +4,9 @@ import block from 'bem-cn-lite';
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import {useNavigate} from 'react-router-dom';
-import {UserDto, getAll, remove, update} from '../../api/user';
+import {getAll, remove, update} from '../../api/user';
 import './UserList.scss';
+import { UserDto } from '../../types/user';
 
 const b = block('user-list');
 

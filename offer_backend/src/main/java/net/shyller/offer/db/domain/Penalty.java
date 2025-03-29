@@ -34,9 +34,9 @@ public class Penalty {
     private Double amount;
 
     /**
-     * Связь с договором, к которому относится штраф.
+     * Связь с объектом, к которому относится штраф.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_id", referencedColumnName = "id")
-    private Contract contract;
+    @JoinColumn(name = "object_id", referencedColumnName = "id")
+    private Object object;
 }

@@ -53,6 +53,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получение списка пользователей (с фильтрацией по email)")
     @ApiResponses(value = {
             @ApiResponse(

@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,10 @@ import net.shyller.offer.common.RoleName;
 import net.shyller.offer.db.domain.Role;
 import net.shyller.offer.db.domain.User;
 import net.shyller.offer.db.repository.UserRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,8 +33,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Пользователь с логином %s не найден", username)));
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+
+        if (optionalUser.isEmpty()) {
+            throw new AccessDeniedException("Пользователь не найден");
+        }
+
+        User user = optionalUser.get();
         Set<Role> roles = user.getRoles();
         boolean hasPaidUserRole = roles.stream().anyMatch(role -> RoleName.ROLE_PAID_USER.name().equals(role.getName()));
 
