@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.shyller.offer.dto.in.SignInRequestDto;
 import net.shyller.offer.service.AuthenticationService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +34,9 @@ public class AuthController {
     })
     @PostMapping("/login")
     public String login(HttpServletResponse response, @RequestBody @Valid SignInRequestDto request) {
-        return authenticationService.authenticate(response, request);
+        String token = authenticationService.authenticate(response, request);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Authorities: " + auth.getAuthorities());
+        return token;
     }
 }

@@ -10,7 +10,7 @@ const b = block('bottom-navbar');
 export const BottomNavbar: React.FC = () => {
     return (
         <nav className={b()}>
-            <NavLink to="/objects" className={({isActive}) => b('item', {active: isActive})}>
+            <NavLink to="/" className={({isActive}) => b('item', {active: isActive})}>
                 <House />
                 <span>Объекты</span>
             </NavLink>

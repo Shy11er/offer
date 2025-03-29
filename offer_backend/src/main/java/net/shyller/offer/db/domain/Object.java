@@ -1,109 +1,106 @@
 package net.shyller.offer.db.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-import net.shyller.offer.common.ContractType;
-import net.shyller.offer.common.DepositBackup;
-import net.shyller.offer.common.OwnerType;
-import net.shyller.offer.common.RentType;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+import lombok.*;
+import net.shyller.offer.common.DepositBackup;
+import net.shyller.offer.common.ObjectType;
+import net.shyller.offer.common.OwnerType;
+import net.shyller.offer.common.RentType;
 
 /**
- * Базовый класс для представления договора.
+ * Базовый класс для представления объекта.
  * Этот класс содержит общую информацию, которая может быть использована для различных типов договоров.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "contract")
+@Table(name = "object")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Contract {
+public class Object {
     /**
-     * Уникальный идентификатор договора.
+     * Уникальный идентификатор объекта.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     /**
-     * Тип договора.
+     * Тип объекта.
      */
     @Enumerated(EnumType.STRING)
-    @Column(name="contract_type")
-    private ContractType contractType;
+    @Column(name="object_type")
+    private ObjectType objectType;
 
     /**
-     * Тип владельца договора.
+     * Тип владельца объекта.
      */
     @Enumerated(EnumType.STRING)
     @Column(name="owner_type")
     private OwnerType ownerType;
 
     /**
-     * Имя владельца(или представителя) договора.
+     * Имя владельца(или представителя) объекта.
      */
     @Column(name = "owner_name")
     private String ownerName;
 
     /**
-     * Номер телефона владельца договора.
+     * Номер телефона владельца объекта.
      */
     @Column(name = "owner_phone")
     private String ownerPhone;
 
     // Данные физ лица
     /**
-     * Паспорт владельца договора.
+     * Паспорт владельца объекта.
      */
     @Column(name = "passport_series")
     private String passportSeries;
 
     /**
-     * Паспорт владельца договора.
+     * Паспорт владельца объекта.
      */
     @Column(name = "passport_number")
     private String passportNumber;
 
     // Данные юр лица
     /**
-     * Название организации договора.
+     * Название организации объекта.
      */
     @Column(name = "organization_name")
     private String organizationName;
 
     /**
-     * ОГРН организации договора.
+     * ОГРН организации объекта.
      */
     @Column(name = "ogrn")
     private String ogrn;
 
     /**
-     * ИНН организации договора.
+     * ИНН организации объекта.
      */
     @Column(name = "inn")
     private String inn;
 
     /**
-     * КПП организации договора.
+     * КПП организации объекта.
      */
     @Column(name = "kpp")
     private String kpp;
 
     /**
-     * Юридический адрес организации договора.
+     * Юридический адрес организации объекта.
      */
     @Column(name = "legal_address")
     private String legalAddress;
 
     /**
-     * Должность представителя организации договора.
+     * Должность представителя организации объекта.
      */
     @Column(name = "position_of_representative")
     private String positionOfRepresentative;
@@ -115,13 +112,13 @@ public class Contract {
     private String document;
 
     /**
-     * Электронная почта владельца договора.
+     * Электронная почта владельца объекта.
      */
     @Column(name = "email")
     private String email;
 
     /**
-     * Адрес регистрации владельца договора.
+     * Адрес регистрации владельца объекта.
      */
     @Column(name = "registration_address")
     private String registrationAddress;
@@ -158,7 +155,26 @@ public class Contract {
     @Column(name = "technical_description")
     private String technicalDescription;
 
-    // УСЛОВИЯ АРЕНДЫ
+    // ДАННЫЕ ОБ ОБЪЕКТЕ АРЕНДЫ(для услуг)
+    /*
+     * Тип услуги.
+     */
+    @Column(name = "service_type")
+    private String serviceType;
+
+    /*
+     * Техническое описание.
+     */
+    @Column(name = "service_description")
+    private String serviceDescription;
+
+    /*
+     * Результат услуги (что получит клиент).
+     */
+    @Column(name = "service_result")
+    private String serviceResult;
+
+    // УСЛОВИЯ АРЕНДЫ(для техники и недвижимости)
     /**
      * Тип аренды.
      */
@@ -190,10 +206,9 @@ public class Contract {
     @Column(name = "end_date")
     private OffsetDateTime endDate;
 
-
     // ФОРМАТ ОПЛАТЫ
     /**
-     * Флаг, указывающий, будет ли залог в рамках договора.
+     * Флаг, указывающий, будет ли залог в рамках объекта.
      */
     @Column(name = "is_deposit")
     private boolean isDeposit;
@@ -205,7 +220,7 @@ public class Contract {
     private Double depositAmount;
 
     /**
-     * Тип залога, если он предусмотрен для договора.
+     * Тип залога, если он предусмотрен для объекта.
      * Возможные значения: {@link DepositBackup}.
      */
     @Enumerated(EnumType.STRING)
@@ -225,22 +240,38 @@ public class Contract {
     @Column(name = "can_smoke")
     private boolean canSmoke;
 
+    @Column(name = "payment_details")
+    private String paymentDetails;
+
     /**
      * Штрафы
      */
-    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "object", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Penalty> penalties;
 
     /**
-     * Дата подписания договора.
+     * Дата подписания объекта.
      */
     @Column(name = "date_of_signed")
-    private LocalDateTime dateOfSigned;
+    private OffsetDateTime dateOfSigned;
 
     /**
-     * Владелец договора.
+     * Создан ли объект.
+     */
+    @Column(name = "is_generated")
+    private boolean isGenerated;
+
+    /**
+     * Владелец объекта.
      */
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private User owner;
+
+    /**
+     * Подписант объекта.
+     */
+    @OneToOne
+    @JoinColumn(name = "signer_id", referencedColumnName = "id")
+    private User signer;
 }

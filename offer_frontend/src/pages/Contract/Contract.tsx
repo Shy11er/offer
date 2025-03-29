@@ -1,10 +1,12 @@
-import {Lock, Server, ShieldKeyhole} from '@gravity-ui/icons';
 import {Button, Checkbox, Text, TextInput} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import InputMask from 'react-input-mask';
 import {useNavigate, useParams} from 'react-router-dom';
 import './Contract.scss';
+import {getById} from '../../api/object';
+import {ObjectDto} from '../../types/object';
+import {renderContract} from '../../templates/renderContract';
 
 const b = block('contract');
 
@@ -19,7 +21,7 @@ interface IFormData {
 export const Contract: React.FC = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [contract] = useState<any>(null);
+    const [object, setObject] = useState<ObjectDto | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [agreedPolicy, setAgreedPolicy] = useState(false);
     const [agreedOffer, setAgreedOffer] = useState(false);
@@ -59,9 +61,8 @@ export const Contract: React.FC = () => {
 
         (async () => {
             try {
-                // const response = await fetch(`/api/contract/${id}`);
-                // const data = await response.json();
-                // setContract(data);
+                const data = await getById(id);
+                setObject(data);
             } catch (error) {
                 console.error('Ошибка при загрузке контракта:', error);
             } finally {
@@ -70,12 +71,17 @@ export const Contract: React.FC = () => {
         })();
     }, [id]);
 
+    const contract = useMemo(() => {
+        if (!object) return null;
+        return renderContract({form: object});
+    }, [object]);
+
     if (loading) return <div className={b()}>Загрузка...</div>;
-    // if (!contract) return <div className={b()}>Договор не найден</div>;
+    if (!object) return <div className={b()}>Договор не найден</div>;
 
     return (
         <div className={b()}>
-            <section className={b('contract-data')}>
+            {/* <section className={b('contract-data')}>
                 <h2>Договор-оферта краткосрочной аренды</h2>
                 <p>
                     на посуточный наём жилого помещения г. <strong>{contract?.city ?? '-'}</strong>,
@@ -206,8 +212,8 @@ export const Contract: React.FC = () => {
                         </p>
                     </div>
                 </div>
-            </section>
-
+            </section> */}
+            <div className={b('content')}>{contract}</div>
             <section className={b('form')}>
                 <h4>Заполните ваши данные для подписания договора</h4>
                 <form onSubmit={handleSubmit}>
