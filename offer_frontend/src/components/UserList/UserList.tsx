@@ -5,8 +5,8 @@ import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import {useNavigate} from 'react-router-dom';
 import {getAll, remove, update} from '../../api/user';
+import {UserDto} from '../../types/user';
 import './UserList.scss';
-import { UserDto } from '../../types/user';
 
 const b = block('user-list');
 
@@ -74,6 +74,11 @@ export const UserList: React.FC = () => {
         navigate('/profile/add');
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/auth');
+    };
+
     return (
         <div className={b()}>
             <div className={b('header')}>
@@ -87,48 +92,63 @@ export const UserList: React.FC = () => {
                 >
                     Добавить
                 </Button>
+                {users.length > 0 && (
+                    <div className={b('table-wrapper')}>
+                        <Table
+                            columns={[
+                                {id: 'username', name: 'Логин'},
+                                {id: 'password', name: 'Пароль'},
+                                {id: 'subscriptionExpiresAt', name: 'Осталось дней'},
+                                {id: 'extend', name: 'Продлить'},
+                                {id: 'actions', name: ''},
+                            ]}
+                            data={users.map((u) => ({
+                                username: u.username,
+                                password: u.password,
+                                subscriptionExpiresAt: getDaysLeft(u.subscriptionExpiresAt),
+                                extend: (
+                                    <div style={{display: 'flex', gap: 8}}>
+                                        <TextInput
+                                            size="s"
+                                            type="number"
+                                            placeholder="дни"
+                                            value={extendDaysMap[u.id] || ''}
+                                            onChange={(e) =>
+                                                setExtendDaysMap((prev) => ({
+                                                    ...prev,
+                                                    [u.id]: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                        <Button size="s" onClick={() => handleExtend(u)}>
+                                            +
+                                        </Button>
+                                    </div>
+                                ),
+                                actions: (
+                                    <Button
+                                        size="s"
+                                        view="flat-danger"
+                                        onClick={() => handleDelete(u.id)}
+                                    >
+                                        <TrashBin />
+                                    </Button>
+                                ),
+                            }))}
+                        />
+                    </div>
+                )}
             </div>
-
-            {users.length > 0 && (
-                <Table
-                    columns={[
-                        {id: 'username', name: 'Логин'},
-                        {id: 'password', name: 'Пароль'},
-                        {id: 'subscriptionExpiresAt', name: 'Осталось дней'},
-                        {id: 'extend', name: 'Продлить'},
-                        {id: 'actions', name: ''},
-                    ]}
-                    data={users.map((u) => ({
-                        username: u.username,
-                        password: u.password,
-                        subscriptionExpiresAt: getDaysLeft(u.subscriptionExpiresAt),
-                        extend: (
-                            <div style={{display: 'flex', gap: 8}}>
-                                <TextInput
-                                    size="s"
-                                    type="number"
-                                    placeholder="дни"
-                                    value={extendDaysMap[u.id] || ''}
-                                    onChange={(e) =>
-                                        setExtendDaysMap((prev) => ({
-                                            ...prev,
-                                            [u.id]: e.target.value,
-                                        }))
-                                    }
-                                />
-                                <Button size="s" onClick={() => handleExtend(u)}>
-                                    +
-                                </Button>
-                            </div>
-                        ),
-                        actions: (
-                            <Button size="s" view="flat-danger" onClick={() => handleDelete(u.id)}>
-                                <TrashBin />
-                            </Button>
-                        ),
-                    }))}
-                />
-            )}
+            <Button
+                onClick={handleLogout}
+                view="outlined-danger"
+                selected
+                size="xl"
+                width="auto"
+                className={b('logout')}
+            >
+                Выйти из аккаунта
+            </Button>
         </div>
     );
 };
