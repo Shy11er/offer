@@ -32,7 +32,7 @@ export const Profile: React.FC = () => {
     }, []);
 
     if (loading) return <div className={b()}>Загрузка...</div>;
-    const isAdmin = user?.roles.includes('ROLE_ADMIN');
+    const isAdmin = user?.roles && user?.roles?.includes('ROLE_ADMIN');
 
     if (isAdmin) {
         return (
@@ -41,8 +41,8 @@ export const Profile: React.FC = () => {
             </div>
         );
     }
-    const hasPaidRole = user.roles?.includes('ROLE_PAID_USER');
-    const expiresAt = user.subscriptionExpiresAt ? new Date(user.subscriptionExpiresAt) : null;
+    const hasPaidRole = user?.roles && user?.roles?.includes('ROLE_PAID_USER');
+    const expiresAt = user?.subscriptionExpiresAt ? new Date(user.subscriptionExpiresAt) : null;
     const isSubscriptionActive = hasPaidRole && expiresAt && expiresAt > new Date();
 
     const handleLogout = () => {

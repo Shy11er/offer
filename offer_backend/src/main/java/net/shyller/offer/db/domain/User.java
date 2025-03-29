@@ -38,8 +38,8 @@ public class User  implements UserDetails {
     )
     private Set<Role> roles;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<Contract> contracts;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private List<Object> objects;
 
     @Column(name = "encrypted_password")
     private String encryptedPassword;

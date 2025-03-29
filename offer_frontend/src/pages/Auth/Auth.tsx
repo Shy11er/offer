@@ -1,10 +1,10 @@
 import {Button, Text, TextInput} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import React, {useState} from 'react';
-import './Auth.scss';
-import {login} from '../../api/auth';
-import {useNavigate} from 'react-router-dom';
 import toast from 'react-hot-toast';
+import {useNavigate} from 'react-router-dom';
+import {login} from '../../api/auth';
+import './Auth.scss';
 
 const b = block('auth');
 

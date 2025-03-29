@@ -1,8 +1,12 @@
 package net.shyller.offer.config;
 
 import net.shyller.offer.common.RoleName;
+import net.shyller.offer.db.domain.Object;
+import net.shyller.offer.db.domain.Penalty;
 import net.shyller.offer.db.domain.Role;
 import net.shyller.offer.db.domain.User;
+import net.shyller.offer.dto.ObjectDto;
+import net.shyller.offer.dto.PenaltyDto;
 import net.shyller.offer.dto.UserDto;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
@@ -11,8 +15,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Configuration
 public class ModelMapperConfig {
@@ -36,6 +42,16 @@ public class ModelMapperConfig {
                                             .toList())
                                     .orElse(Collections.emptyList()))
                             .map(User::getRoles, UserDto::setRoles);
+                });
+
+        modelMapper.createTypeMap(Object.class, ObjectDto.class)
+                .addMappings(mapper -> {
+                    mapper.using(ctx -> Optional.ofNullable(ctx.getSource())
+                                    .map(source -> ((List<Penalty>) source).stream()
+                                            .map(p -> modelMapper.map(p, PenaltyDto.class))
+                                            .collect(Collectors.toList()))
+                                    .orElse(Collections.emptyList()))
+                            .map(Object::getPenalties, ObjectDto::setPenalties);
                 });
 
         return modelMapper;

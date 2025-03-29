@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Schema(enumAsRef = true)
-public enum ContractType {
+public enum ObjectType {
     TECHNIQUE, // Техника
-    APARTMENT; // Недвижимость
+    APARTMENT, // Недвижимость
+    SERVICE; // Услуги
 }
