@@ -264,7 +264,7 @@ public class Object {
     /**
      * Владелец объекта.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 
@@ -274,4 +274,7 @@ public class Object {
     @OneToOne
     @JoinColumn(name = "signer_id", referencedColumnName = "id")
     private User signer;
+
+    @OneToOne(mappedBy = "object", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Contract contract;
 }

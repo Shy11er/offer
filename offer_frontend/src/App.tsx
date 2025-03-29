@@ -11,6 +11,7 @@ import {Object} from './pages/Object';
 import {Profile} from './pages/Profile';
 import SuccessPage from './pages/SuccessPage/SuccessPage';
 import {UserCreate} from './pages/UserCreate';
+import { Reports } from './pages/Reports';
 
 const App = () => {
     return (
@@ -91,6 +92,16 @@ const App = () => {
                     element={
                         <Wrapper>
                             <UserCreate />
+                            <BottomNavbar />
+                        </Wrapper>
+                    }
+                />
+
+                <Route
+                    path="/reports"
+                    element={
+                        <Wrapper>
+                            <Reports />
                             <BottomNavbar />
                         </Wrapper>
                     }

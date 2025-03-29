@@ -35,8 +35,6 @@ public class AuthController {
     @PostMapping("/login")
     public String login(HttpServletResponse response, @RequestBody @Valid SignInRequestDto request) {
         String token = authenticationService.authenticate(response, request);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authorities: " + auth.getAuthorities());
         return token;
     }
 }

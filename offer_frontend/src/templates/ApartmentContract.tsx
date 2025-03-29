@@ -196,7 +196,7 @@ export const ApartmentContract: React.FC<ContractSectionProps> = ({contract}) =>
                 </>
             )}
             <p>Телефон: {contract?.ownerPhone ?? '[телефон]'}</p>
-            <p>Email: {contract?.email ?? '[email]'}</p>
+            {contract?.email && <p>Email: {contract?.email}</p>}
         </section>
     );
 };

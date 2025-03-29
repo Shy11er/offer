@@ -59,7 +59,8 @@ public class ObjectService {
         objectRepository.delete(object);
     }
 
-    private Object getById(UUID id) {
+    @Transactional
+    public Object getById(UUID id) {
         return objectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Пользователь с id %s не найден", id)));
     }

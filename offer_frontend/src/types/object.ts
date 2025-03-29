@@ -1,3 +1,5 @@
+import { ContractDto } from "./contract";
+
 export enum ObjectType {
     APARTMENT = 'APARTMENT',
     TECHNIQUE = 'TECHNIQUE',
@@ -64,6 +66,8 @@ export interface ObjectDto {
     dateOfSigned?: string;
     paymentDetails?: string;
     isGenerated?: boolean;
+
+    contract?: ContractDto;
 }
 
 export interface ContractSectionProps {

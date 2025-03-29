@@ -136,4 +136,7 @@ public class ObjectDto {
     @JsonProperty("isGenerated")
     @Schema(description = "Сгенерирован ли объект")
     private boolean isGenerated;
+
+    @Schema(description = "Договор")
+    private ContractDto contract;
 }
