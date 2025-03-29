@@ -151,7 +151,7 @@ export const TechniqueContract: React.FC<ContractSectionProps> = ({contract}) =>
                 </>
             )}
             <p>Телефон: {contract?.ownerPhone ?? '[телефон арендодателя]'}</p>
-            <p>Email: {contract?.email ?? '[email арендодателя]'}</p>
+            {contract?.email && <p>Email: {contract?.email}</p>}
             <p>Реквизиты: {contract?.paymentDetails ?? '[банковские реквизиты арендодателя]'}</p>
 
             {/* <h4>Арендатор:</h4>
