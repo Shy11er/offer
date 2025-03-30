@@ -47,6 +47,7 @@ public class SecurityConfig {
                         "/error",
                         "/swagger-ui/**",
                         "/swagger-resources/*",
+                        "/objects/{id}",
                         "/v3/api-docs/**",
                         "/actuator/health/**")
                     .permitAll()

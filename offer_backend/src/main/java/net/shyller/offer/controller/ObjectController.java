@@ -26,12 +26,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/objects")
-@SecurityRequirement(name = "JWT")
 @Tag(name = "Контроллер объектов", description = "Обслуживает запрос объектов")
 public class ObjectController {
     private final ObjectService service;
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_PAID_USER')")
+    @SecurityRequirement(name = "JWT")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получение всех объектов пользователя")
@@ -51,7 +51,6 @@ public class ObjectController {
         return service.getAll();
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_PAID_USER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получение объекта по id")
@@ -72,6 +71,7 @@ public class ObjectController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_PAID_USER')")
+    @SecurityRequirement(name = "JWT")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Создание нового объекта")
@@ -102,6 +102,7 @@ public class ObjectController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_PAID_USER')")
+    @SecurityRequirement(name = "JWT")
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Обновление существующего объекта")
@@ -134,6 +135,7 @@ public class ObjectController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_PAID_USER')")
+    @SecurityRequirement(name = "JWT")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Удаление существующего объекта")
