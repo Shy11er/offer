@@ -42,11 +42,17 @@ export const AdminObjectList: React.FC<Props> = ({objects, setObjects}) => {
                 return;
             }
 
+            const start = new Date(object.startDate);
+            const end = new Date(object.endDate);
+    
+            const diffInMs = end.getTime() - start.getTime();
+            const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+    
             const updatedObject = {
                 ...object,
+                rentAmount: diffInDays.toString(),
                 dateOfSigned: new Date().toISOString(),
             };
-
             await update(objectId, updatedObject);
 
             setObjects((prev) => prev.map((o) => (o.id === objectId ? updatedObject : o)));

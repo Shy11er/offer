@@ -16,9 +16,6 @@ export const RentConditions: React.FC<StepProps> = ({form, handleChange}) => {
 
     const getPricePlaceholder = () => (rentType === 'DAY' ? 'Стоимость суток' : 'Стоимость часа');
 
-    const getAmountPlaceholder = () =>
-        rentType === 'DAY' ? 'Количество суток' : 'Количество часов';
-
     return (
         <div className={b('condition_section')}>
             <Text style={{color: 'rgba(0,0,0,0.7)', fontSize: '13px'}} variant="subheader-2">
@@ -53,14 +50,6 @@ export const RentConditions: React.FC<StepProps> = ({form, handleChange}) => {
                 type="number"
                 value={form.rentPrice?.toString() ?? ''}
                 onChange={(e) => handleChange('rentPrice', +e.target.value)}
-            />
-
-            <TextInput
-                placeholder={getAmountPlaceholder()}
-                className={b('input')}
-                size="xl"
-                value={form.rentAmount ?? ''}
-                onChange={(e) => handleChange('rentAmount', e.target.value)}
             />
         </div>
     );

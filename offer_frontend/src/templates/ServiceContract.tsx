@@ -15,7 +15,8 @@ export const ServiceContract: React.FC<ContractSectionProps> = ({contract}) => {
                 {contract?.registrationAddress?.split(',')[0] ??
                     '[Город из адреса регистрации исполнителя или автоматически]'}
                 , дата акцепта:{' '}
-                {contract?.dateOfSigned?.substring(0, 10) ?? '[Дата акцепта, проставляется при принятии]'}
+                {contract?.dateOfSigned?.substring(0, 10) ??
+                    '[Дата акцепта, проставляется при принятии]'}
             </p>
 
             <h3>1. Общие положения</h3>
@@ -23,13 +24,26 @@ export const ServiceContract: React.FC<ContractSectionProps> = ({contract}) => {
                 1.1. Настоящий документ является публичной офертой в соответствии со ст. 435 и ч. 2
                 ст. 437 Гражданского кодекса РФ (ГК РФ).
             </p>
-            <p>
-                1.2. Я, {contract?.ownerName ?? '[ФИО исполнителя]'}, паспорт{' '}
-                {contract?.passportSeries ?? ''}{' '}
-                {contract?.passportNumber ?? '[паспорт исполнителя]'}, зарегистрированный по адресу:{' '}
-                {contract?.registrationAddress ?? '[адрес регистрации исполнителя]'} (далее —
-                Исполнитель), предлагаю заключить договор на оказание услуг на условиях ниже.
-            </p>
+            {contract?.ownerType === 'LEGAL' ? (
+                <p>
+                    1.2. {contract?.organizationName ?? '[Наименование организации]'}, ОГРН{' '}
+                    {contract?.ogrn ?? '[ОГРН]'}, ИНН {contract?.inn ?? '[ИНН]'}, КПП{' '}
+                    {contract?.kpp ?? '[КПП]'}, юридический адрес:{' '}
+                    {contract?.legalAddress ?? '[юридический адрес]'}, в лице{' '}
+                    {contract?.ownerName ?? '[ФИО представителя]'}, должность{' '}
+                    {contract?.positionOfRepresentative ?? '[должность представителя]'},
+                    действующего на основании {contract?.document ?? '[документ-основание]'} (далее
+                    — Арендодатель), предлагает заключить договор аренды имущества на условиях ниже.
+                </p>
+            ) : (
+                <p>
+                    1.2. Я, {contract?.ownerName ?? '[ФИО]'}, паспорт{' '}
+                    {contract?.passportSeries ?? ''}{' '}
+                    {contract?.passportNumber ?? '[паспортные данные]'}, зарегистрированный по
+                    адресу: {contract?.registrationAddress ?? '[адрес регистрации]'} (далее —
+                    Арендодатель), предлагаю заключить договор аренды имущества на условиях ниже.
+                </p>
+            )}
             <p>
                 1.3. Акцепт оферты осуществляется Клиентом путём заполнения данных, подтверждения
                 согласия и оплаты в порядке раздела 4.
@@ -47,7 +61,14 @@ export const ServiceContract: React.FC<ContractSectionProps> = ({contract}) => {
             <h3>3. Срок оказания услуги</h3>
             <p>
                 3.1. Услуга предоставляется в период:{' '}
-                {contract?.startDate ?? '[срок оказания услуги]'}.
+                {contract.startDate
+                    ? `${contract?.startDate
+                          .substring(0, contract?.startDate?.length - 8)
+                          .replace('T', ' ')} - ${contract?.endDate
+                          ?.substring(0, contract?.endDate?.length - 8)
+                          .replace('T', ' ')}`
+                    : '[срок оказания услуги]'}
+                .
             </p>
             <p>
                 3.2. Исполнитель вправе завершить услугу досрочно при достижении результата,
@@ -80,7 +101,6 @@ export const ServiceContract: React.FC<ContractSectionProps> = ({contract}) => {
             </p>
             <p>5.2. Клиент обязуется:</p>
             <p>5.2.1. Оплатить услугу по разделу 4.</p>
-            <p>5.2.2. Обеспечить условия для оказания услуги (например, доступ к помещению).</p>
 
             <h3>6. Ответственность сторон</h3>
             <p>

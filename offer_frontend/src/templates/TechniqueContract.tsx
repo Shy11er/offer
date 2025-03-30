@@ -25,7 +25,7 @@ export const TechniqueContract: React.FC<ContractSectionProps> = ({contract}) =>
                     1.2. {contract?.organizationName ?? '[Наименование организации]'}, ОГРН{' '}
                     {contract?.ogrn ?? '[ОГРН]'}, ИНН {contract?.inn ?? '[ИНН]'}, КПП{' '}
                     {contract?.kpp ?? '[КПП]'}, юридический адрес:{' '}
-                    {contract?.registrationAddress ?? '[юридический адрес]'}, в лице{' '}
+                    {contract?.legalAddress ?? '[юридический адрес]'}, в лице{' '}
                     {contract?.ownerName ?? '[ФИО представителя]'}, должность{' '}
                     {contract?.positionOfRepresentative ?? '[должность представителя]'},
                     действующего на основании {contract?.document ?? '[документ-основание]'} (далее
@@ -60,8 +60,14 @@ export const TechniqueContract: React.FC<ContractSectionProps> = ({contract}) =>
 
             <h3>3. Срок аренды</h3>
             <p>
-                3.1. Срок аренды: от {contract?.startDate ?? '[дата начала]'} до{' '}
-                {contract?.endDate ?? '[дата окончания]'}.
+                3.1. Срок аренды: от{' '}
+                {contract?.startDate
+                    ?.substring(0, contract?.startDate?.length - 8)
+                    .replace('T', ' ') ?? '[минимальный срок аренды]'}{' '}
+                до{' '}
+                {contract?.endDate?.substring(0, contract?.endDate?.length - 8).replace('T', ' ') ??
+                    '[максимальный срок аренды]'}
+                .
             </p>
             <p>
                 3.2. Арендатор обязан вернуть Имущество в последний день срока аренды, если иное не
@@ -86,7 +92,7 @@ export const TechniqueContract: React.FC<ContractSectionProps> = ({contract}) =>
             <p>4.3. Оплата вносится до передачи Имущества, если иное не согласовано.</p>
             <p>
                 4.4. Залог: {contract?.depositAmount ?? '[залог]'} рублей. Возврат:{' '}
-                {contract?.depositBackup ?? '[условия возврата залога]'}.
+                {contract?.depositBackup === 'CARD' ? 'на карту' : 'наличными'}.
             </p>
 
             <h3>5. Права и обязанности сторон</h3>
