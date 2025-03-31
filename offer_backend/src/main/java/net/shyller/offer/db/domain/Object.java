@@ -68,6 +68,12 @@ public class Object {
     @Column(name = "passport_number")
     private String passportNumber;
 
+    /**
+     * Кем выдан паспорт.
+     */
+    @Column(name = "given_by")
+    private String givenBy;
+
     // Данные юр лица
     /**
      * Название организации объекта.
@@ -176,6 +182,33 @@ public class Object {
 
     // УСЛОВИЯ АРЕНДЫ(для техники и недвижимости)
     /**
+     * Состояние квартиры.
+     */
+    @Column(name="apartment_condition")
+    private String apartmentCondition;
+
+    /**
+     * Список вещей в квартире.
+     */
+    @Column(name="list_of_appartment_properties")
+    private String listOfAppartmentProperties;
+
+    /**
+     * Штраф за ранний въезд/поздний выезд.
+     */
+    @Column(name="penalty_for_incorrect_exit")
+    private String penaltyForIncorrectExit;
+
+    /**
+     * Штраф за ранний въезд/поздний выезд.
+     */
+    @Column(name="key_amount")
+    private Integer keyAmount;
+
+    @Column(name="people_amount")
+    private Integer peopleAmount;
+
+    /**
      * Тип аренды.
      */
     @Enumerated(EnumType.STRING)
@@ -226,6 +259,18 @@ public class Object {
     @Enumerated(EnumType.STRING)
     @Column(name="deposit_backup")
     private DepositBackup depositBackup;
+
+    /**
+     * Условия возврата залога.
+     */
+    @Column(name = "conditions_for_return_pledge")
+    private String conditionsForReturnPledge;
+
+    /**
+     * Условия при котором залога не возвращается.
+     */
+    @Column(name = "when_pledge_not_return")
+    private String whenPledgeNotReturn;
 
     // СПЕЦИАЛЬНЫЕ УСЛОВИЯ
     /**

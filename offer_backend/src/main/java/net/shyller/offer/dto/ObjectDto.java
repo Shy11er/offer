@@ -2,8 +2,8 @@ package net.shyller.offer.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 import net.shyller.offer.common.DepositBackup;
@@ -43,6 +43,9 @@ public class ObjectDto {
     @Schema(description = "Номер паспорта")
     private String passportNumber;
 
+    @Schema(description = "Кем выдан паспорт")
+    private String givenBy;
+
     @Schema(description = "Название организации")
     private String organizationName;
 
@@ -78,6 +81,30 @@ public class ObjectDto {
 
     @Schema(description = "Кадастровый номер")
     private String cadastralNumber;
+
+    @Schema(description = "Состояние квартиры")
+    private String apartmentCondition;
+
+    @Schema(description = "Детали оплаты")
+    private String paymentDetails;
+
+    @Schema(description="Список вещей в квартире")
+    private String listOfAppartmentProperties;
+
+    @Schema(description="Штраф за ранний въезд/поздний выезд")
+    private String penaltyForIncorrectExit;
+
+    @Schema(description = "Условия возврата залога")
+    private String conditionsForReturnPledge;
+
+    @Schema(description = "Условия при котором залога не возвращается")
+    private String whenPledgeNotReturn;
+
+    @Schema(description = "Количество ключей")
+    private String keyAmount;
+
+    @Schema(description = "Количество людей для аренды")
+    private String peopleAmount;
 
     @Schema(description = "Тип техники")
     private String technicalType;

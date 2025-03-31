@@ -1,4 +1,4 @@
-import {Button, Text, TextInput} from '@gravity-ui/uikit';
+import {Button, Text, TextArea, TextInput} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import React from 'react';
 import {StepProps} from '../../types/createPage';
@@ -127,6 +127,26 @@ export const PaymentConditions: React.FC<StepProps> = ({form, handleChange}) => 
                                 size="xl"
                                 value={form.paymentDetails ?? ''}
                                 onChange={(e) => handleChange('paymentDetails', e.target.value)}
+                            />
+
+                            <TextArea
+                                placeholder="Условия возврата залога (Например, «при выезде, если нет ущерба»)"
+                                className={b('input')}
+                                size="xl"
+                                value={form.conditionsForReturnPledge ?? ''}
+                                onChange={(e) =>
+                                    handleChange('conditionsForReturnPledge', e.target.value)
+                                }
+                            />
+
+                            <TextArea
+                                placeholder="Когда залог на возвращется (Например, при отказе за 24 часа)"
+                                className={b('input')}
+                                size="xl"
+                                value={form.whenPledgeNotReturn ?? ''}
+                                onChange={(e) =>
+                                    handleChange('whenPledgeNotReturn', e.target.value)
+                                }
                             />
                         </div>
                     </>

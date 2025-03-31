@@ -1,4 +1,4 @@
-import { ContractDto } from "./contract";
+import {ContractDto} from './contract';
 
 export enum ObjectType {
     APARTMENT = 'APARTMENT',
@@ -66,6 +66,15 @@ export interface ObjectDto {
     dateOfSigned?: string;
     paymentDetails?: string;
     isGenerated?: boolean;
+
+    apartmentCondition?: string;
+    listOfAppartmentProperties?: string;
+    peopleAmount?: number;
+    penaltyForIncorrectExit?: string;
+    keyAmount?: number;
+    conditionsForReturnPledge?: string;
+    whenPledgeNotReturn?: string;
+    givenBy?: string;
 
     contract?: ContractDto;
 }

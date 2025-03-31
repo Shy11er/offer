@@ -1,8 +1,8 @@
-import {Button, Text, TextInput} from '@gravity-ui/uikit';
+import {Button, Text, TextArea, TextInput} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import React from 'react';
 import {StepProps} from '../../types/createPage';
-import {RentType} from '../../types/object';
+import {ObjectType, RentType} from '../../types/object';
 import './RentConditions.scss';
 
 const b = block('create-object');
@@ -22,6 +22,52 @@ export const RentConditions: React.FC<StepProps> = ({form, handleChange}) => {
                 Условия аренды
             </Text>
 
+            {form.objectType === ObjectType.APARTMENT && (
+                <>
+                    <TextArea
+                        placeholder="Состояние квартиры — Например, «с мебелью, исправна»"
+                        className={b('input')}
+                        size="xl"
+                        value={form.apartmentCondition ?? ''}
+                        style={{minHeight: '50px'}}
+                        onChange={(e) => handleChange('apartmentCondition', e.target.value)}
+                    />
+
+                    <TextArea
+                        placeholder="Перечень имущества — Список (например, «диван, телевизор, плита»)"
+                        className={b('input')}
+                        size="xl"
+                        value={form.listOfAppartmentProperties ?? ''}
+                        onChange={(e) => handleChange('listOfAppartmentProperties', e.target.value)}
+                    />
+
+                    <TextArea
+                        placeholder="Ранний заезд/поздний выезд — Стоимость (например, «500 руб./час»)"
+                        className={b('input')}
+                        size="xl"
+                        value={form.penaltyForIncorrectExit ?? ''}
+                        onChange={(e) => handleChange('penaltyForIncorrectExit', e.target.value)}
+                    />
+
+                    <TextInput
+                        placeholder="Количество проживающих (Например, 3)"
+                        className={b('input')}
+                        size="xl"
+                        type="number"
+                        value={form.peopleAmount?.toString() ?? ''}
+                        onChange={(e) => handleChange('peopleAmount', +e.target.value)}
+                    />
+
+                    <TextInput
+                        placeholder="Количество ключей (Например, 2)"
+                        className={b('input')}
+                        size="xl"
+                        type="number"
+                        value={form.keyAmount?.toString() ?? ''}
+                        onChange={(e) => handleChange('keyAmount', +e.target.value)}
+                    />
+                </>
+            )}
             <div className={b('condition_section_options')}>
                 <Button
                     view={rentType === 'DAY' ? 'action' : 'outlined-success'}
