@@ -83,7 +83,7 @@ export const Step3Form: React.FC<Step3FormProps> = ({form, setForm, handleChange
                 variant="subheader-2"
                 className={b('subtitle')}
             >
-                Заполните юридическую информацию о арендодателе
+                Заполните юридическую информацию об арендодателе
             </Text>
 
             {renderOwnerFields()}

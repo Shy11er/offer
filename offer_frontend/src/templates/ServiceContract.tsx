@@ -39,7 +39,8 @@ export const ServiceContract: React.FC<ContractSectionProps> = ({contract}) => {
                 <p>
                     1.2. Я, {contract?.ownerName ?? '[ФИО]'}, паспорт{' '}
                     {contract?.passportSeries ?? ''}{' '}
-                    {contract?.passportNumber ?? '[паспортные данные]'}, зарегистрированный по
+                    {contract?.passportNumber ?? '[паспортные данные]'}
+                    {contract?.givenBy && `, выдан ${contract?.givenBy}`}, зарегистрированный по
                     адресу: {contract?.registrationAddress ?? '[адрес регистрации]'} (далее —
                     Арендодатель), предлагаю заключить договор аренды имущества на условиях ниже.
                 </p>
@@ -134,6 +135,7 @@ export const ServiceContract: React.FC<ContractSectionProps> = ({contract}) => {
                 Паспорт: {contract?.passportSeries ?? ''}{' '}
                 {contract?.passportNumber ?? '[паспорт исполнителя]'}
             </p>
+            {contract?.givenBy && <p>Кем выдан: {contract?.givenBy ?? ''}</p>}
             <p>Адрес: {contract?.registrationAddress ?? '[адрес регистрации исполнителя]'}</p>
             <p>Телефон: {contract?.ownerPhone ?? '[телефон исполнителя]'}</p>
             {contract?.email && <p>Email: {contract?.email}</p>}

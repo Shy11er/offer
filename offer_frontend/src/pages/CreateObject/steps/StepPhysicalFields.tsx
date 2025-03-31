@@ -29,6 +29,13 @@ export const StepPhysicalFields: React.FC<StepProps> = ({form, handleChange}) =>
             onChange={(e) => handleChange('passportNumber', e.target.value)}
         />
         <TextInput
+            placeholder="Кем выдан"
+            size="xl"
+            className={b('input')}
+            value={form.givenBy ?? ''}
+            onChange={(e) => handleChange('givenBy', e.target.value)}
+        />
+        <TextInput
             placeholder="Адрес регистрации"
             size="xl"
             className={b('input')}
