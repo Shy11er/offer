@@ -8,7 +8,16 @@ const b = block('create-object');
 export const ServiceContract: React.FC<ContractSectionProps> = ({contract}) => {
     return (
         <section className={b('contract-data')}>
-            <h1>ДОГОВОР-ОФЕРТА</h1>
+            <h1
+                style={{
+                    fontSize: '20px',
+                    fontWeight: 600,
+                    textAlign: 'center',
+                    color: '#30AA6E',
+                }}
+            >
+                Договор-оферта
+            </h1>
             <p>на оказание услуг</p>
             <p>
                 г.{' '}

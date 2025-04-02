@@ -44,7 +44,7 @@ export const ContractPreview: React.FC = () => {
                 const updatedObject = {
                     ...form,
                     isGenerated: true,
-                }
+                };
 
                 await update(id, updatedObject);
                 toast.success('Договор создан');
@@ -68,7 +68,6 @@ export const ContractPreview: React.FC = () => {
 
     const onBack = async () => {
         if (!!id && form) {
-            console.log(1);
             try {
                 const updatedObject = {
                     ...form,
@@ -81,7 +80,6 @@ export const ContractPreview: React.FC = () => {
                 toast.error('Не удалось сохранить объект');
             }
         }
-        console.log(!!id, form);
 
         navigate(-1);
     };

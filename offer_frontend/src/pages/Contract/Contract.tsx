@@ -1,14 +1,14 @@
 import {Button, Checkbox, Text, TextInput} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import React, {useEffect, useMemo, useState} from 'react';
+import toast from 'react-hot-toast';
 import InputMask from 'react-input-mask';
 import {useNavigate, useParams} from 'react-router-dom';
+import {createContract} from '../../api/contract';
 import {getById} from '../../api/object';
 import {renderContract} from '../../templates/renderContract';
 import {ObjectDto} from '../../types/object';
 import './Contract.scss';
-import {createContract} from '../../api/contract';
-import toast from 'react-hot-toast';
 
 const b = block('contract');
 
@@ -110,7 +110,6 @@ export const Contract: React.FC = () => {
         return !!object?.contract;
     }, [object]);
 
-    console.log(isAlreadySigned, object?.contract);
     if (loading) return <div className={b()}>Загрузка...</div>;
     if (!object) return <div className={b()}>Договор не найден</div>;
 

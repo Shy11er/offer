@@ -44,10 +44,10 @@ export const AdminObjectList: React.FC<Props> = ({objects, setObjects}) => {
 
             const start = new Date(object.startDate);
             const end = new Date(object.endDate);
-    
+
             const diffInMs = end.getTime() - start.getTime();
             const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
-    
+
             const updatedObject = {
                 ...object,
                 rentAmount: diffInDays.toString(),
@@ -117,14 +117,18 @@ export const AdminObjectList: React.FC<Props> = ({objects, setObjects}) => {
                                 variant="subheader-2"
                                 className={b('address')}
                             >
-                                {object.address ?? 'Без адреса'}
+                                {object.isTemplate
+                                    ? object.address ?? 'Без адреса'
+                                    : object.customContractName ?? 'Без названия документа'}
                             </Text>
                             <Text
                                 style={{fontSize: '15px', fontWeight: 400}}
                                 variant="body-2"
                                 color="secondary"
                             >
-                                {object.ownerName ?? 'Неизвестный владелец'}
+                                {object.isTemplate
+                                    ? object.ownerName ?? 'Неизвестный владелец'
+                                    : 'Свой шаблон'}
                             </Text>
                         </div>
                     </div>

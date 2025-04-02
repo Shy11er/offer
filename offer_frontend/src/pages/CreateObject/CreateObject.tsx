@@ -3,15 +3,15 @@ import block from 'bem-cn-lite';
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import {useNavigate, useParams} from 'react-router-dom';
+import {getById} from '../../api/object';
 import {ObjectDto, ObjectType, OwnerType} from '../../types/object';
 import './CreateObject.scss';
 import {Step3Form} from './steps/Step3Form';
-import { getById } from '../../api/object';
 
 const b = block('create-object');
 
 export const CreateObject: React.FC = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const [step, setStep] = useState(1);
     const [form, setForm] = useState<Partial<ObjectDto>>({});
     const navigate = useNavigate();
@@ -19,7 +19,9 @@ export const CreateObject: React.FC = () => {
     useEffect(() => {
         if (id) {
             getObject(id);
-            setStep(3);
+            setStep(4);
+        } else {
+            handleChange('isTemplate', true);
         }
     }, [id]);
 
@@ -31,7 +33,7 @@ export const CreateObject: React.FC = () => {
             toast.error('Не удалось получить данные для редактирования');
             navigate('/objects');
         }
-    }
+    };
 
     const handleTypeSelect = (value: ObjectType) => {
         setForm((prev) => ({...prev, objectType: value}));
@@ -52,6 +54,8 @@ export const CreateObject: React.FC = () => {
             toast.error('Не удалось создать объект');
         }
     };
+
+    console.log(form);
 
     return (
         <div className={b()}>
@@ -103,7 +107,9 @@ export const CreateObject: React.FC = () => {
                         size="xl"
                         width="max"
                         disabled={!form.objectType}
-                        onClick={() => setStep(2)}
+                        onClick={() =>
+                            form.objectType === ObjectType.APARTMENT ? setStep(2) : setStep(3)
+                        }
                     >
                         Далее
                     </Button>
@@ -111,6 +117,59 @@ export const CreateObject: React.FC = () => {
             )}
 
             {step === 2 && (
+                <div className={b('step')}>
+                    <Text variant="header-2" className={b('title')}>
+                        Создание договора
+                    </Text>
+                    <Text variant="body-2" className={b('subtitle')}>
+                        Можно загрузить свой договор или создать новый по шаблону
+                    </Text>
+
+                    <div className={b('options')}>
+                        <Button
+                            view={form.isTemplate ? 'action' : 'outlined-success'}
+                            width="max"
+                            size="xl"
+                            style={{color: form.isTemplate ? 'white' : undefined}}
+                            onClick={() => handleChange('isTemplate', true)}
+                        >
+                            По шаблону
+                        </Button>
+                        <Button
+                            view={!form.isTemplate ? 'action' : 'outlined-success'}
+                            width="max"
+                            size="xl"
+                            style={{color: !form.isTemplate ? 'white' : undefined}}
+                            onClick={() => handleChange('isTemplate', false)}
+                        >
+                            Загружу свой
+                        </Button>
+                    </div>
+
+                    <Button
+                        style={{color: 'white'}}
+                        type="submit"
+                        view="action"
+                        size="xl"
+                        width="max"
+                        onClick={() => (form.isTemplate ? setStep(3) : setStep(4))}
+                    >
+                        Далее
+                    </Button>
+                    <Button
+                        view="outlined-danger"
+                        selected
+                        width="max"
+                        size="xl"
+                        className={b('logout')}
+                        onClick={() => setStep(1)}
+                    >
+                        Назад
+                    </Button>
+                </div>
+            )}
+
+            {step === 3 && (
                 <div className={b('step')}>
                     <Text variant="header-2" className={b('title')}>
                         Выберите тип
@@ -147,19 +206,32 @@ export const CreateObject: React.FC = () => {
                         size="xl"
                         width="max"
                         disabled={!form.ownerType}
-                        onClick={() => setStep(3)}
+                        onClick={() => setStep(4)}
                     >
                         Далее
+                    </Button>
+                    <Button
+                        view="outlined-danger"
+                        selected
+                        size="xl"
+                        width="max"
+                        className={b('logout')}
+                        onClick={() =>
+                            form.objectType === ObjectType.APARTMENT ? setStep(2) : setStep(1)
+                        }
+                    >
+                        Назад
                     </Button>
                 </div>
             )}
 
-            {step === 3 && (
+            {step === 4 && (
                 <Step3Form
                     form={form}
                     setForm={setForm}
                     handleChange={handleChange}
                     onSubmit={handleSubmit}
+                    setStep={setStep}
                 />
             )}
         </div>
