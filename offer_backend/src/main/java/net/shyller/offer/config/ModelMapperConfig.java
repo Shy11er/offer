@@ -57,6 +57,9 @@ public class ModelMapperConfig {
             mapper.map(src -> src.getObject(), ContractDto::setObjectDto);
         });
 
+        modelMapper.createTypeMap(ObjectDto.class, Object.class)
+                .addMappings(mapper -> mapper.map(ObjectDto::getIsTemplate, Object::setTemplate));
+
         return modelMapper;
     }
 }

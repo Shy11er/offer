@@ -1,7 +1,10 @@
 package net.shyller.offer.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import net.shyller.offer.db.domain.Contract;
 import net.shyller.offer.db.domain.Object;
@@ -23,7 +26,7 @@ public class ContractService {
     private final CustomUserDetailsService customUserDetailsService;
 
     @Transactional
-    public ContractDto create(ContractDto dto) {
+    public ContractDto create(ContractDto dto, HttpServletRequest request) {
         UUID objectId = dto.getObjectDto().getId();
         Object object = objectService.getById(objectId);
 
@@ -33,6 +36,9 @@ public class ContractService {
 
         Contract contract = modelMapper.map(dto, Contract.class);
         contract.setObject(object);
+        contract.setSignedAt(OffsetDateTime.now());
+        contract.setIp(request.getRemoteAddr());
+        contract.setUserAgent(request.getHeader("User-Agent"));
 
         Contract saved = contractRepository.save(contract);
         return modelMapper.map(saved, ContractDto.class);

@@ -3,7 +3,6 @@ package net.shyller.offer.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 import net.shyller.offer.common.DepositBackup;
@@ -166,4 +165,23 @@ public class ObjectDto {
 
     @Schema(description = "Договор")
     private ContractDto contract;
+
+    @Schema(description = "Кастомный договор")
+    private String customContract;
+
+    @Schema(description = "Название кастомного договора")
+    private String customContractName;
+
+    @Schema(description = "Является ли шаблоном")
+    private boolean isTemplate;
+
+    @Schema(description = "Приложение")
+    private String application;
+
+    @Schema(description = "Название приложения")
+    private String applicationName;
+
+    public boolean getIsTemplate() {
+        return this.isTemplate;
+    }
 }
