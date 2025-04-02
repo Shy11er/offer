@@ -46,10 +46,4 @@ public class ContractDto {
     @NotNull
     @Schema(description = "Дата и время подписания")
     private OffsetDateTime signedAt;
-
-    @Schema(description = "IP адрес, с которого был подписан договор")
-    private String ip;
-
-    @Schema(description = "User-Agent браузера клиента")
-    private String userAgent;
 }

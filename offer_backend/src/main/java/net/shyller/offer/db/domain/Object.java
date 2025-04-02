@@ -322,4 +322,23 @@ public class Object {
 
     @OneToOne(mappedBy = "object", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Contract contract;
+
+    @Column(name = "custom_contract")
+    private String customContract;
+
+    @Column(name = "custom_contract_name")
+    private String customContractName;
+
+    @Column(name = "is_template")
+    private boolean isTemplate;
+
+    @Column(name = "application")
+    private String application;
+
+    @Column(name = "application_name")
+    private String applicationName;
+
+    public boolean getIsTemplatee() {
+        return this.isTemplate;
+    }
 }

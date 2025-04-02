@@ -38,10 +38,7 @@ public class ContractController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ContractDto create(@RequestBody ContractDto contractDto, HttpServletRequest request) {
-        contractDto.setSignedAt(OffsetDateTime.now());
-        contractDto.setIp(request.getRemoteAddr());
-        contractDto.setUserAgent(request.getHeader("User-Agent"));
-        return contractService.create(contractDto);
+        return contractService.create(contractDto, request);
     }
 
     @Operation(summary = "Получение контрактов текущего пользователя")
