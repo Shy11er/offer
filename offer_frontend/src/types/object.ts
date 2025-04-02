@@ -77,6 +77,12 @@ export interface ObjectDto {
     givenBy?: string;
 
     contract?: ContractDto;
+
+    customContract?: string;
+    customContractName?: string;
+    isTemplate?: boolean;
+    application?: string;
+    applicationName?: string;
 }
 
 export interface ContractSectionProps {
