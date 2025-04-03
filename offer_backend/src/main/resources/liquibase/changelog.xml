@@ -8,4 +8,5 @@
         <include file="changelog/v2_contract.sql" relativeToChangelogFile="true"/>
         <include file="changelog/v3_new_fields.sql" relativeToChangelogFile="true"/>
         <include file="changelog/v4_custom_contract.sql" relativeToChangelogFile="true"/>
+        <include file="changelog/v5_photo.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

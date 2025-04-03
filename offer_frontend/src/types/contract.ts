@@ -15,4 +15,5 @@ export interface ContractDto {
 
     ip?: string;
     userAgent?: string;
+    documentPhotoUrl: string;
 }
