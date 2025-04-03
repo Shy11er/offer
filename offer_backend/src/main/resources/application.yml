@@ -4,22 +4,19 @@ server:
   port: 8080
 
 spring:
-  profiles:
-    active: dev
-
   app:
     jwt-token:
-      access:
+      access: jkd8723hjkfd8723jkfds8723hfds8723hfds8723jkfd8237hfds8723h
 
   security:
     user:
-      password:
+      password: tD54'kS+Z*kw4:XR
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    username:
-    password:
-    url:
+    username: postgres
+    password: hanjsbnjasaskmflvasdda
+    url: jdbc:postgresql://188.120.227.37:5432/docroom
     auto-commit: false
     maximum-pool-size: 5
     leak-detection-threshold: 120000
@@ -44,6 +41,5 @@ spring:
   web:
     throw-exception-if-no-handler-found: true
 
-
 aes:
-  key:
+  key: iopasduitghjqwee
