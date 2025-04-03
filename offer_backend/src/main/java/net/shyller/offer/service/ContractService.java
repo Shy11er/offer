@@ -1,9 +1,15 @@
 package net.shyller.offer.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import net.shyller.offer.db.domain.Contract;
@@ -13,8 +19,10 @@ import net.shyller.offer.db.repository.ContractRepository;
 import net.shyller.offer.dto.ContractDto;
 import net.shyller.offer.dto.ObjectDto;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +32,12 @@ public class ContractService {
     private final ObjectService objectService;
     private final ModelMapper modelMapper;
     private final CustomUserDetailsService customUserDetailsService;
+
+    @Value("${file.storage}")
+    private String uploadDir;
+
+    @Value("${file.max-size}")
+    private Long maxFileSize;
 
     @Transactional
     public ContractDto create(ContractDto dto, HttpServletRequest request) {
@@ -63,6 +77,55 @@ public class ContractService {
                     return dto;
                 })
                 .toList();
+    }
+
+    public String upload(MultipartFile file) {
+        final long fileSize = file.getSize();
+        final boolean isLargeFile = fileSize >= maxFileSize;
+
+        if (isLargeFile) {
+            throw new IllegalArgumentException("Файл слишком большой. Максимум: " + maxFileSize + " байт");
+        }
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Пустой файл не может быть загружен");
+        }
+
+        final String originalFilename = file.getOriginalFilename();
+        final String extension = Optional.ofNullable(originalFilename)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(originalFilename.lastIndexOf('.') + 1))
+                .orElse("bin");
+
+        final String filename = UUID.randomUUID() + "." + extension;
+        final Path destinationPath = Paths.get(uploadDir).resolve(filename);
+
+        try {
+            Files.createDirectories(destinationPath.getParent());
+            file.transferTo(destinationPath);
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка при сохранении файла", e);
+        }
+
+        return String.format("storage/images/%s", filename);
+    }
+
+    public byte[] loadDocumentPhoto(UUID contractId) {
+        Contract contract =
+            contractRepository
+                .findById(contractId)
+                .orElseThrow(() -> new EntityNotFoundException("Контракт не найден"));
+
+        String path = contract.getDocumentPhotoUrl();
+        if (path == null) {
+            throw new IllegalStateException("Фото не прикреплено к контракту");
+        }
+
+        try {
+            return Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException("Не удалось прочитать фото", e);
+        }
     }
 
 }

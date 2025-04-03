@@ -7,7 +7,6 @@ export const getAll = async (): Promise<ObjectDto[]> => {
 };
 
 export const getById = async (objectId: string): Promise<ObjectDto> => {
-    console.log(objectId);
     const response = await instance.get<ObjectDto>(`/objects/${objectId}`);
     return response.data;
 };

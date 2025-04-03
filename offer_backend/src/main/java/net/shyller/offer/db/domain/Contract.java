@@ -46,4 +46,7 @@ public class Contract {
 
     @Column(name = "user_agent")
     private String userAgent;
+
+    @Column(name = "document_photo_url")
+    private String documentPhotoUrl;
 }
