@@ -2,8 +2,9 @@ import {Button, Text} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
+import toast from 'react-hot-toast';
 import {useNavigate} from 'react-router-dom';
-import {getAllByObjectOwner} from '../../api/contract';
+import {getAllByObjectOwner, getPhoto} from '../../api/contract';
 import {ContractDto} from '../../types/contract';
 import './Reports.scss';
 
@@ -24,6 +25,15 @@ export const Reports: React.FC = () => {
         })();
     }, []);
 
+    const viewDocumentPhoto = async (contractId: string) => {
+        try {
+            await getPhoto(contractId);
+        } catch (error) {
+            toast.error('Не удалось загрузить фото');
+            console.error(error);
+        }
+    };
+
     return (
         <div className={b()}>
             <h1 className={b('heading')}>
@@ -40,17 +50,10 @@ export const Reports: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {contracts.map((contract, key) => (
-                            <>
-                                <tr key={key} className={b('row')}>
-                                    <td
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            fontSize: '13px',
-                                        }}
-                                        className={b('cell')}
-                                    >
+                        {contracts.map((contract) => (
+                            <React.Fragment key={contract.id}>
+                                <tr className={b('row')}>
+                                    <td className={b('cell')}>
                                         <Text variant="body-1">{contract.fullName}</Text>
                                         <Text variant="caption-1">
                                             {contract.passportSeries}, {contract.passportNumber}
@@ -76,16 +79,36 @@ export const Reports: React.FC = () => {
                                             )}
                                         </div>
                                     </td>
+                                    <td className={b('cell')}></td>
                                 </tr>
-                                <Button
-                                    view="action"
-                                    size="xl"
-                                    style={{color: 'white'}}
-                                    onClick={() => navigate(`/contracts/${contract.objectDto?.id}`)}
-                                >
-                                    Посмотреть договор
-                                </Button>
-                            </>
+                                <tr>
+                                    <td colSpan={4} className={b('cell')}>
+                                        <div className={b('actions')}>
+                                            <Button
+                                                view="action"
+                                                size="xl"
+                                                style={{color: 'white'}}
+                                                onClick={() =>
+                                                    navigate(`/contracts/${contract.objectDto?.id}`)
+                                                }
+                                            >
+                                                Договор
+                                            </Button>
+                                            <Button
+                                                view="action"
+                                                size="xl"
+                                                style={{color: 'white'}}
+                                                onClick={() => viewDocumentPhoto(contract.id ?? '')}
+                                                disabled={contract.documentPhotoUrl === null}
+                                            >
+                                                {contract.documentPhotoUrl
+                                                    ? 'Фото документа'
+                                                    : 'Нет фото'}
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </React.Fragment>
                         ))}
                     </tbody>
                 </table>
