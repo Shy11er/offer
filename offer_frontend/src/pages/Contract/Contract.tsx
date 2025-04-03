@@ -4,7 +4,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import toast from 'react-hot-toast';
 import InputMask from 'react-input-mask';
 import {useNavigate, useParams} from 'react-router-dom';
-import {createContract} from '../../api/contract';
+import {createContract, uploadDocument} from '../../api/contract';
 import {getById} from '../../api/object';
 import {renderContract} from '../../templates/renderContract';
 import {ObjectDto} from '../../types/object';
@@ -36,6 +36,8 @@ export const Contract: React.FC = () => {
     });
     const [errors, setErrors] = useState<any>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string>('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -50,6 +52,8 @@ export const Contract: React.FC = () => {
         if (!formData.address) newErrors.address = 'Адрес обязателен!';
         if (!formData.phone || formData.phone.length !== 18)
             newErrors.phone = 'Телефон обязателен!';
+        if (!uploadedPhotoUrl)
+            newErrors.documentPhoto = 'Пожалуйста, загрузите фото паспорта или водительских прав!';
 
         setErrors(newErrors);
 
@@ -63,6 +67,7 @@ export const Contract: React.FC = () => {
                     address: formData.address,
                     phone: formData.phone,
                     signedAt: new Date().toISOString(),
+                    documentPhotoUrl: uploadedPhotoUrl, // теперь передаём обязательно
                 });
 
                 navigate('/contracts/success');
@@ -223,6 +228,55 @@ export const Contract: React.FC = () => {
                             />
                         )}
                     </InputMask>
+                    <label className={b('upload-button')}>
+                        <Button
+                            view="action"
+                            size="xl"
+                            width="max"
+                            as="label"
+                            htmlFor="upload-input"
+                            disabled={isAlreadySigned || uploading}
+                            onClick={() => document.getElementById('upload-input')?.click()}
+                            style={{
+                                color: 'white',
+                                whiteSpace: 'normal',
+                                wordBreak: 'break-word',
+                                lineHeight: '1.3',
+                            }}
+                        >
+                            {uploading
+                                ? 'Загрузка...'
+                                : uploadedPhotoUrl
+                                  ? 'Фото загружено'
+                                  : 'Загрузить фото главной страницы паспорта или прав'}
+                        </Button>
+
+                        <input
+                            id="upload-input"
+                            type="file"
+                            accept="image/*"
+                            style={{display: 'none'}}
+                            disabled={isAlreadySigned || uploading}
+                            onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+
+                                setUploading(true);
+                                toast.loading('Проверка фото...', {id: 'photo-check'});
+
+                                try {
+                                    await new Promise((res) => setTimeout(res, 2000));
+                                    const uploadedUrl = await uploadDocument(file);
+                                    setUploadedPhotoUrl(uploadedUrl);
+                                    toast.success('Фото загружено!', {id: 'photo-check'});
+                                } catch (error) {
+                                    toast.error('Ошибка при загрузке фото', {id: 'photo-check'});
+                                } finally {
+                                    setUploading(false);
+                                }
+                            }}
+                        />
+                    </label>
 
                     <div className={b('checkboxes')}>
                         <Checkbox

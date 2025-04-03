@@ -46,4 +46,8 @@ public class ContractDto {
     @NotNull
     @Schema(description = "Дата и время подписания")
     private OffsetDateTime signedAt;
+
+    @NotNull
+    @Schema(description = "Ссылка на фото документа (паспорт / водительские права)")
+    private String documentPhotoUrl;
 }
