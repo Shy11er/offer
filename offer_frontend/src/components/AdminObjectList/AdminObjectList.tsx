@@ -1,5 +1,5 @@
 import {ObjectDto} from '@/types/object';
-import {DateField, DatePicker} from '@gravity-ui/date-components';
+import {DatePicker} from '@gravity-ui/date-components';
 import {dateTimeParse} from '@gravity-ui/date-utils';
 import {Button, Text} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
