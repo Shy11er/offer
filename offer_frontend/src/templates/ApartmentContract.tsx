@@ -18,7 +18,10 @@ export const ApartmentContract: React.FC<ContractSectionProps> = ({contract}) =>
             >
                 Договор-оферта
             </h1>
-            <p>на посуточный наём жилого помещения</p>
+            <p>
+                на {contract.rentType === RentType.HOUR ? 'почасовой' : 'посуточный'} наём жилого
+                помещения
+            </p>
             <p>
                 г. {contract?.address?.split(',')[0] ?? '[Город, указанный в адресе квартиры]'},
                 дата акцепта оферты:{' '}
@@ -127,17 +130,28 @@ export const ApartmentContract: React.FC<ContractSectionProps> = ({contract}) =>
                 4.1. Стоимость найма{' '}
                 {contract?.rentPrice ? convertNumberToWordsRu(+contract?.rentPrice) : ''} в{' '}
                 {contract?.rentType === RentType.DAY ? 'сутки' : 'час'}. Общая сумма:{' '}
-                {contract?.rentPrice && contract?.startDate && contract?.endDate
-                    ? `${convertNumberToWordsRu(
-                          +contract.rentPrice *
-                              (Math.floor(
-                                  (new Date(contract.endDate).setHours(0, 0, 0, 0) -
-                                      new Date(contract.startDate).setHours(0, 0, 0, 0)) /
-                                      (1000 * 60 * 60 * 24),
-                              ) +
-                                  1),
-                      )} рублей.`
-                    : ' (будет указано после указания даты начала и окончания аренды)'}
+                {contract?.rentPrice &&
+                    contract?.rentType &&
+                    contract?.endDate &&
+                    contract?.startDate &&
+                    (contract.rentType === RentType.HOUR
+                        ? convertNumberToWordsRu(
+                              +contract.rentPrice *
+                                  Math.floor(
+                                      (new Date(contract.endDate).getTime() -
+                                          new Date(contract.startDate).getTime()) /
+                                          (1000 * 60 * 60),
+                                  ),
+                          )
+                        : convertNumberToWordsRu(
+                              +contract.rentPrice *
+                                  (Math.floor(
+                                      (new Date(contract.endDate).getTime() -
+                                          new Date(contract.startDate).getTime()) /
+                                          (1000 * 60 * 60 * 24),
+                                  ) +
+                                      1),
+                          ))}
                 .
             </p>
             <p>

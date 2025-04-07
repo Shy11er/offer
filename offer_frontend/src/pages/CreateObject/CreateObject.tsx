@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import {useNavigate, useParams} from 'react-router-dom';
 import {getById} from '../../api/object';
-import {ObjectDto, ObjectType, OwnerType} from '../../types/object';
+import {ObjectDto, ObjectType, OwnerType, RentType} from '../../types/object';
 import './CreateObject.scss';
 import {Step3Form} from './steps/Step3Form';
 
@@ -13,7 +13,9 @@ const b = block('create-object');
 export const CreateObject: React.FC = () => {
     const {id} = useParams();
     const [step, setStep] = useState(1);
-    const [form, setForm] = useState<Partial<ObjectDto>>({});
+    const [form, setForm] = useState<Partial<ObjectDto>>({
+        rentType: RentType.DAY,
+    });
     const navigate = useNavigate();
 
     useEffect(() => {

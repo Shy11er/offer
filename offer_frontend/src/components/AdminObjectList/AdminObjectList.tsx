@@ -1,5 +1,5 @@
 import {ObjectDto} from '@/types/object';
-import {DateField} from '@gravity-ui/date-components';
+import {DatePicker} from '@gravity-ui/date-components';
 import {dateTimeParse} from '@gravity-ui/date-utils';
 import {Button, Text} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
@@ -132,27 +132,26 @@ export const AdminObjectList: React.FC<Props> = ({objects, setObjects}) => {
                             </Text>
                         </div>
                     </div>
-
-                    <DateField
-                        className={b('input')}
-                        size="xl"
-                        placeholder="Дата и время начала аренды"
-                        defaultValue={object.startDate ? dateTimeParse(object.startDate) : null}
+                    <DatePicker
                         value={object.startDate ? dateTimeParse(object.startDate) : null}
-                        onUpdate={(val: any) => handleDateChange(object.id, 'startDate', val)}
-                        hasClear
-                    />
-
-                    <DateField
-                        className={b('input')}
+                        defaultValue={object.startDate ? dateTimeParse(object.startDate) : null}
                         size="xl"
-                        placeholder="Дата и время завершения аренды"
+                        className={b('input')}
+                        hasClear
+                        onUpdate={(val: any) => handleDateChange(object.id, 'startDate', val)}
+                        placeholder="Дата и время начала аренды"
+                        format='MM/DD/YYYY hh:mm'
+                    />
+                    <DatePicker
                         value={object.endDate ? dateTimeParse(object.endDate) : null}
                         defaultValue={object.endDate ? dateTimeParse(object.endDate) : null}
-                        onUpdate={(val: any) => handleDateChange(object.id, 'endDate', val)}
+                        size="xl"
+                        className={b('input')}
                         hasClear
+                        onUpdate={(val: any) => handleDateChange(object.id, 'endDate', val)}
+                        placeholder="Дата и время завершения аренды"
+                        format='MM/DD/YYYY hh:mm'
                     />
-
                     <div className={b('actions')}>
                         <Button
                             view="action"

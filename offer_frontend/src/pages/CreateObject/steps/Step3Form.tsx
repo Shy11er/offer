@@ -3,7 +3,7 @@ import block from 'bem-cn-lite';
 import React, {useState} from 'react';
 import {PaymentConditions} from '../../../components/PaymentConditions';
 import {StepProps} from '../../../types/createPage';
-import {ObjectDto, ObjectType, OwnerType, PenaltyDto} from '../../../types/object';
+import {ObjectDto, ObjectType, OwnerType, PenaltyDto, RentType} from '../../../types/object';
 import {StepApartmentFields} from './StepApartmentFields';
 import {StepLegalFields} from './StepLegalFields';
 import {StepPhysicalFields} from './StepPhysicalFields';
@@ -27,6 +27,11 @@ export const Step3Form: React.FC<Step3FormProps> = ({
 }) => {
     const [agreedPolicy, setAgreedPolicy] = useState(false);
     const [agreedOffer, setAgreedOffer] = useState(false);
+    const rentType = form.rentType ?? 'DAY';
+
+    const handleRentTypeChange = (type: RentType) => {
+        handleChange('rentType', type);
+    };
 
     const renderOwnerFields = () => {
         if (form.ownerType === OwnerType.PHYSICAL) {
@@ -75,7 +80,9 @@ export const Step3Form: React.FC<Step3FormProps> = ({
             penalties: [...(prev.penalties ?? []), {reason: '', amount: 0}],
         }));
     };
-    
+
+    const getPricePlaceholder = () => (rentType === 'DAY' ? 'Стоимость суток' : 'Стоимость часа');
+
     return (
         <div className={b('step')}>
             <Text
@@ -214,11 +221,32 @@ export const Step3Form: React.FC<Step3FormProps> = ({
                         value={form.application ?? ''}
                         onChange={(e) => handleChange('application', e.target.value)}
                     />
+                    <div className={b('condition_section_options')}>
+                        <Button
+                            view={rentType === 'DAY' ? 'action' : 'outlined-success'}
+                            width="max"
+                            size="xl"
+                            style={{color: rentType === 'DAY' ? 'white' : undefined}}
+                            onClick={() => handleRentTypeChange(RentType.DAY)}
+                        >
+                            На сутки
+                        </Button>
+                        <Button
+                            view={rentType === 'HOUR' ? 'action' : 'outlined-success'}
+                            width="max"
+                            size="xl"
+                            style={{color: rentType === 'HOUR' ? 'white' : undefined}}
+                            onClick={() => handleRentTypeChange(RentType.HOUR)}
+                        >
+                            На час
+                        </Button>
+                    </div>
                     <TextInput
-                        placeholder="Стоимость суток аренды (руб)"
+                        placeholder={getPricePlaceholder()}
                         className={b('input')}
                         size="xl"
-                        value={form.rentPrice?.toString() || ''}
+                        type="number"
+                        value={form.rentPrice?.toString() ?? ''}
                         onChange={(e) => handleChange('rentPrice', +e.target.value)}
                     />
                 </>
