@@ -1,7 +1,7 @@
 import {Text} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import React from 'react';
-import {ObjectDto, ObjectType} from '../types/object';
+import {ObjectDto, ObjectType, RentType} from '../types/object';
 import {formatDate} from '../utils/formatDate';
 import {ApartmentContract} from './ApartmentContract';
 import {ServiceContract} from './ServiceContract';
@@ -47,13 +47,20 @@ export const renderContract: React.FC<{form: ObjectDto}> = ({form}) => {
                             className={b('title')}
                         >
                             Стоимость пользования помещением:{' '}
-                            {+form.rentPrice *
-                                (Math.floor(
-                                    (new Date(form.endDate).setHours(0, 0, 0, 0) -
-                                        new Date(form.startDate).setHours(0, 0, 0, 0)) /
-                                        (1000 * 60 * 60 * 24),
-                                ) +
-                                    1)}{' '}
+                            {form.rentType === RentType.HOUR
+                                ? +form.rentPrice *
+                                  Math.floor(
+                                      (new Date(form.endDate).getTime() -
+                                          new Date(form.startDate).getTime()) /
+                                          (1000 * 60 * 60),
+                                  )
+                                : +form.rentPrice *
+                                  (Math.floor(
+                                      (new Date(form.endDate).getTime() -
+                                          new Date(form.startDate).getTime()) /
+                                          (1000 * 60 * 60 * 24),
+                                  ) +
+                                      1)}{' '}
                             рублей.
                         </Text>
                         <br />
