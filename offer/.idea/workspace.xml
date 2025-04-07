@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2161bbf5-080b-4ec4-96e1-197c73373ea1" name="Changes" comment="" />
+    <list default="true" id="2161bbf5-080b-4ec4-96e1-197c73373ea1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../offer_frontend/src/api/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../offer_frontend/src/api/user.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,6 +21,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="develop" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -52,9 +59,9 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.codeium.enabled": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "payment",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/RobotComp.ru/Documents/projects/offer/offer_backend",
+    "last_opened_file_path": "C:/Users/RobotComp.ru/Documents/projects/offer/offer_backend/pom.xml",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -99,6 +106,7 @@
       <updated>1742843775329</updated>
       <workItem from="1742843776399" duration="5208000" />
       <workItem from="1742913843471" duration="1501000" />
+      <workItem from="1743781924629" duration="905000" />
     </task>
     <servers />
   </component>

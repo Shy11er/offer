@@ -1,3 +1,5 @@
+app-url: https://docroom.ru/api
+
 server:
   servlet:
     context-path: /api
@@ -6,17 +8,17 @@ server:
 spring:
   app:
     jwt-token:
-      access: jkd8723hjkfd8723jkfds8723hfds8723hfds8723jkfd8237hfds8723h
+      access:
 
   security:
     user:
-      password: tD54'kS+Z*kw4:XR
+      password:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: hanjsbnjasaskmflvasdda
-    url: jdbc:postgresql://188.120.227.37:5432/docroom
+    username:
+    password:
+    url:
     auto-commit: false
     maximum-pool-size: 5
     leak-detection-threshold: 120000
@@ -46,4 +48,8 @@ file:
   max-size: 5242880 # 5MB
 
 aes:
-  key: iopasduitghjqwee
+  key:
+
+tinkoff:
+  terminal_key:
+  secret_key:
