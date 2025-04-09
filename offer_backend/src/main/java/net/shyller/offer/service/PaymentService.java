@@ -4,22 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.*;
 import java.util.*;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.shyller.offer.db.domain.Pay;
 import net.shyller.offer.db.domain.User;
 import net.shyller.offer.db.repository.PayRepository;
-import net.shyller.offer.db.repository.UserRepository;
-import net.shyller.offer.dto.PaymentRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -28,9 +24,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class PaymentService {
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
+    private static final Integer SUBCRIPTION_PRICE = 950 * 100;
 
-    private final CustomUserDetailsService customUserDetailsService;
-    private final UserRepository userRepository;
+    private final UserService userService;
+
     @Value("${tinkoff.terminal_key}")
     private String terminalKey;
 
@@ -43,35 +40,9 @@ public class PaymentService {
     private final RestTemplate restTemplate;
     private final PayRepository payRepository;
 
-//    public String createPaymentToken(PaymentRequest paymentRequest) throws NoSuchAlgorithmException {
-//        String url = "https://securepay.tinkoff.ru/v2/Init";
-//        User user = userRepository.findById(paymentRequest.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
-//
-//        Map<String, Object> data = new HashMap<>();
-//        data.put("TerminalKey", terminalKey);
-//        data.put("Amount", String.valueOf((int) (paymentRequest.getAmount() * 100)));
-//        data.put("OrderId", String.valueOf(System.currentTimeMillis()));
-//        data.put("Description", "Приобретение подписки на 950 рублей");
-//        data.put("Password", secretKey);
-//
-//        Pay pay = Pay.builder().user(user).status("init").email(paymentRequest.getEmail()).build();
-//        payRepository.save(pay);
-//
-//        String hashedToken = generateToken(data);
-//        data.put("Token", hashedToken);
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<Map<String, String>> entity = new HttpEntity<>(data, headers);
-//        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-//
-//        return response.getBody();
-//    }
-
     @Transactional
     public Map<String, String> payInit(UUID userId, String userEmail, String backUrl) throws NoSuchAlgorithmException   {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User user = userService.getById(userId);
 
         Pay newPay = Pay.builder()
                 .user(user)
@@ -82,7 +53,6 @@ public class PaymentService {
 
         payRepository.save(newPay);
 
-        int paymentAmount = 10 * 100;
         String orderId = String.format("%s-%s", newPay.getId(), System.currentTimeMillis());
         String description = String.format("Оплата заказа №%s", newPay.getId());
         String successUrl = backUrl;
@@ -90,32 +60,31 @@ public class PaymentService {
 
         Map<String, Object> receipt = new HashMap<>();
         receipt.put("Items", Arrays.asList(
-                Map.of("Name", "Продление подписки", "Price", paymentAmount, "Quantity", 1, "Amount", paymentAmount, "Tax", "none")
+                Map.of("Name", "Продление подписки", "Price", SUBCRIPTION_PRICE, "Quantity", 1, "Amount", SUBCRIPTION_PRICE, "Tax", "none")
         ));
         receipt.put("Email", userEmail);
         receipt.put("Taxation", "osn");
 
-
         Map<String, Object> data = new HashMap<>();
         data.put("TerminalKey", terminalKey);
-        data.put("Amount", paymentAmount);
+        data.put("Amount", SUBCRIPTION_PRICE);
         data.put("OrderId", orderId);
         data.put("Description", description);
         data.put("SuccessURL", successUrl);
         data.put("FailURL", failUrl);
-        data.put("NotificationURL", String.format("%s/pay/notification", appUrl));
+        data.put("NotificationURL", String.format("%s/api/pay/notification", appUrl));
         data.put("Recurrent", "Y");
 
         Map<String, Object> dataForToken = new HashMap<>();
         dataForToken.put("TerminalKey", terminalKey);
-        dataForToken.put("Amount", String.valueOf(paymentAmount));
+        dataForToken.put("Amount", String.valueOf(SUBCRIPTION_PRICE));
         dataForToken.put("OrderId", orderId);
         dataForToken.put("Description", description);
         dataForToken.put("SuccessURL", successUrl);
         dataForToken.put("FailURL", failUrl);
-        dataForToken.put("NotificationURL", String.format("%s/pay/notification", appUrl));
-        dataForToken.put("Password", secretKey);  // Correct Password
-        dataForToken.put("Recurrent", "Y");  // Ensure Recurrent in token generation
+        dataForToken.put("NotificationURL", String.format("%s/api/pay/notification", appUrl));
+        dataForToken.put("Password", secretKey);
+        dataForToken.put("Recurrent", "Y");
 
         String token = generateToken(dataForToken);
         data.put("Token", token.toLowerCase());
@@ -156,11 +125,11 @@ public class PaymentService {
 
     public Map<String, Object> checkPaymentStatus(UUID userId) {
         if (userId == null) {
-            throw new IllegalArgumentException("user_id is required");
+            throw new IllegalArgumentException("userId is required");
         }
 
         Pay payInfo = payRepository.findFirstByUserIdOrderByIdDesc(userId)
-                .orElseThrow(() -> new RuntimeException("Pay info not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Pay info not found"));
 
         Map<String, Object> answer = new HashMap<>();
         answer.put("currentStatus", payInfo.getStatus());
@@ -177,24 +146,28 @@ public class PaymentService {
         return answer;
     }
 
-    public Pay cancelPayment(UUID userId) {
+    @Transactional
+    public String cancelPayment(UUID userId) {
         Pay payInfo = payRepository.findFirstByUserIdOrderByIdDesc(userId)
                 .orElseThrow(() -> new RuntimeException("Pay info not found"));
 
         String newStatus = "canceled_by_user";
         payInfo.setStatus(newStatus);
+        userService.cancelSubscription(userId);
 
         payRepository.save(payInfo);
 
-        return payInfo;
+        return payInfo.getStatus();
     }
 
     public void handlePaymentNotification(Map<String, Object> data) {
         String orderId = (String) data.get("OrderId");
         String status = (String) data.get("Status");
 
-        Pay payment = payRepository.findFirstByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("Payment info not found"));
+        Pay payment =
+            payRepository
+                .findFirstByOrderId(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Payment info not found"));
 
         if (!(boolean) data.get("Success")) {
             payment.setStatus(status);
@@ -209,6 +182,7 @@ public class PaymentService {
 
         if ("CONFIRMED".equals(status)) {
             payment.setTimestamp(OffsetDateTime.now());
+            userService.updateSubcription(payment.getUser());
         }
 
         payRepository.save(payment);
@@ -218,174 +192,143 @@ public class PaymentService {
 
     private void logNotificationData(Map<String, Object> data) {
         try {
-            java.nio.file.Files.write(java.nio.file.Paths.get("notification_data.json"),
-                    (new com.fasterxml.jackson.databind.ObjectMapper()).writeValueAsString(data).getBytes(),
-                    java.nio.file.StandardOpenOption.APPEND);
+            java.nio.file.Path path = java.nio.file.Paths.get("notification_data.json");
+            if (!java.nio.file.Files.exists(path)) {
+                java.nio.file.Files.createFile(path);
+            }
+
+            String jsonData = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(data);
+            java.nio.file.Files.write(path, (jsonData + "\n").getBytes(), java.nio.file.StandardOpenOption.APPEND);
         } catch (Exception e) {
             throw new RuntimeException("Error logging notification data", e);
         }
     }
 
-    public String getPaymentStatus(String paymentId) throws NoSuchAlgorithmException {
-        String url = "https://securepay.tinkoff.ru/v2/GetState";
-
-        Map<String, String> requestData = new HashMap<>();
-        requestData.put("TerminalKey", terminalKey);
-        requestData.put("PaymentId", paymentId);
-
-        Map<String, Object> dataForToken = new HashMap<>();
-        dataForToken.put("TerminalKey", terminalKey);
-        dataForToken.put("PaymentId", paymentId);
-        dataForToken.put("Password", secretKey);
-
-        String token = generateToken(dataForToken);
-
-        requestData.put("Token", token);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Map<String, String>> entity = new HttpEntity<>(requestData, headers);
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-
-        return response.getBody();
+    @Scheduled(cron = "0 0 1 * * *")
+    protected void runCharge() throws NoSuchAlgorithmException, JsonProcessingException {
+        logger.debug("Charge initiated at " + Instant.now());
+        charge();
     }
 
-    public void cancelSubscription(String paymentId) {
-        User currentUser = customUserDetailsService.getCurrentUser();
-        Pay payment = payRepository.findFirstByUserIdOrderByIdDesc(currentUser.getId())
-                .orElseThrow(() -> new RuntimeException("Pay info not found"));
-
-        if (payment == null) {
-            throw new RuntimeException("Payment info not found for user " + currentUser.getId());
-        }
-
-        payment.setStatus("canceled_by_user");
-        payment.setPaidUntil(null);
-        payRepository.save(payment);
-    }
-
-    public void charge() {
-        logger.debug("Начинаем обработку платежей: " + LocalDateTime.now());
-        List<Pay> pays = payRepository.findAll();
+    @Transactional
+    public void charge() throws NoSuchAlgorithmException, JsonProcessingException {
+        List<Pay> pays = payRepository.findAllByStatusNotIn(Collections.singletonList("canceled_by_user"));
         Set<UUID> users = new HashSet<>();
+
+        ZoneId zoneId = ZoneId.of("Europe/Moscow");
+        ZonedDateTime now = ZonedDateTime.now(zoneId);
+
         for (Pay pay : pays) {
-            if (users.contains(pay.getUser().getId()) || pay.getTimestamp() == null) {
-                continue;
-            }
             UUID userId = pay.getUser().getId();
-            users.add(userId);
-            LocalDate now = LocalDate.now();
-            if (pay.getTimestamp().toLocalDate().equals(now) && !pay.getStatus().equals("canceled_by_user")) {
-                try {
-                    // Обработка платежа
-                    processRecurrentPayment(pay);
-                } catch (Exception e) {
-                    throw new RuntimeException("Error processing payment for userId: " + userId, e);
+            if (!users.contains(userId) && pay.getTimestamp() != null) {
+                users.add(userId);
+
+                ZonedDateTime payTimestamp = ZonedDateTime.ofInstant(pay.getTimestamp().toInstant(), zoneId);
+
+                if (payTimestamp.isBefore(now)) {
+                    processPayment(pay);
                 }
             }
         }
     }
 
-    private void processRecurrentPayment(Pay pay) throws JsonProcessingException, NoSuchAlgorithmException {
-        User user =
-            userRepository
-                .findById(pay.getUser().getId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    private void processPayment(Pay pay) throws NoSuchAlgorithmException, JsonProcessingException {
+        String userEmail = pay.getEmail();
+        UUID userId = pay.getUser().getId();
+        String backUrl = "https://admin.flourum.ru/profile";
 
-        Pay newPay = Pay.builder().user(user).email(pay.getEmail()).build();
+        User user = userService.getById(userId);
+        Pay latestPay = payRepository.findTopByOrderByIdDesc();
 
-        int paymentAmount = 950 * 100;
-        String orderId = user.getId() + "-" + newPay.getId() + "-rebill-" + System.currentTimeMillis();
-        String description = "Оплата подписки";
-        String successUrl = "https://admin.flourum.ru/profile";
-        String failUrl = "https://admin.flourum.ru/profile";
+        Pay newPay = new Pay();
+        newPay.setUser(user);
+        newPay.setStatus("subscription_init");
+        newPay.setEmail(userEmail);
+        newPay.setOrderId(String.valueOf(latestPay != null ? latestPay.getId() + 1 : 1L));
+        payRepository.save(newPay);
+
+        String orderId = userId + "-rebill-" + newPay.getId();
+        String description = "Оплата заказа №" + newPay.getId();
+        String successUrl = backUrl;
+        String failUrl = backUrl;
 
         Map<String, Object> receipt = new HashMap<>();
         receipt.put("Items", Arrays.asList(
-                Map.of("Name", "Продление подписки", "Price", paymentAmount, "Quantity", 1, "Amount", paymentAmount, "Tax", "none")
+                Map.of("Name", "Продление подписки Flourum", "Price", SUBCRIPTION_PRICE, "Quantity", 1, "Amount", SUBCRIPTION_PRICE, "Tax", "none")
         ));
-        receipt.put("Email", pay.getEmail());
+        receipt.put("Email", userEmail);
         receipt.put("Taxation", "osn");
 
         Map<String, Object> data = new HashMap<>();
         data.put("TerminalKey", terminalKey);
-        data.put("Amount", paymentAmount);
+        data.put("Amount", SUBCRIPTION_PRICE);
         data.put("OrderId", orderId);
         data.put("Description", description);
         data.put("SuccessURL", successUrl);
         data.put("FailURL", failUrl);
-        data.put("NotificationURL", "https://api.flourum.ru/pay/notification");
-        data.put("DATA", Map.of("Email", pay.getEmail()));
-        data.put("Receipt", receipt);
+        data.put("NotificationURL", String.format("%s/api/pay/notification", appUrl));
         data.put("Recurrent", "Y");
 
         Map<String, Object> dataForToken = new HashMap<>();
         dataForToken.put("TerminalKey", terminalKey);
-        dataForToken.put("Amount", String.valueOf(paymentAmount));
+        dataForToken.put("Amount", String.valueOf(SUBCRIPTION_PRICE));
         dataForToken.put("OrderId", orderId);
         dataForToken.put("Description", description);
+        dataForToken.put("SuccessURL", successUrl);
+        dataForToken.put("FailURL", failUrl);
+        dataForToken.put("NotificationURL", String.format("%s/api/pay/notification", appUrl));
+        dataForToken.put("Password", secretKey);
+        dataForToken.put("Recurrent", "Y");
+
+        String token = generateToken(dataForToken);
+        data.put("Token", token.toLowerCase());
+        data.put("DATA", Map.of("Email", userEmail));
+        data.put("Receipt", receipt);
+
+        String url = "https://securepay.tinkoff.ru/v2/Init";
+//        Map<String, Object> responseData = restTemplate.postForObject(url, data, Map.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(data), String.class);
+        String responseData = response.getBody();
+        Map<String, Object> responseJson = new ObjectMapper().readValue(responseData, Map.class);
+
+        if (responseData != null && Boolean.TRUE.equals(responseJson.get("Success"))) {
+            String paymentId = (String) responseJson.get("PaymentId");
+            newPay.setStatus((String) responseJson.get("Status"));
+            newPay.setPaymentId(paymentId);
+            newPay.setOrderId(orderId);
+            payRepository.save(newPay);
+
+            chargePayment(paymentId, pay.getRebillId());
+        } else {
+            throw new RuntimeException("Ошибка инициализации платежа: " + responseJson.get("Message"));
+        }
+    }
+
+    private void chargePayment(String paymentId, String rebillId) throws NoSuchAlgorithmException {
+        String url = "https://securepay.tinkoff.ru/v2/Charge";
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("TerminalKey", terminalKey);
+        data.put("PaymentId", paymentId);
+        data.put("RebillId", "145919");
+
+        Map<String, Object> dataForToken = new HashMap<>();
+        dataForToken.put("TerminalKey", terminalKey);
+        dataForToken.put("PaymentId", paymentId);
+        dataForToken.put("RebillId", rebillId);
         dataForToken.put("Password", secretKey);
 
         String token = generateToken(dataForToken);
         data.put("Token", token);
 
-        String url = "https://securepay.tinkoff.ru/v2/Init";
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(data), String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            String responseData = response.getBody();
-            if (responseData != null) {
-                Map responseJson = new ObjectMapper().readValue(responseData, Map.class);
-                if ("Success".equals(responseJson.get("Success"))) {
-                    String paymentId = (String) responseJson.get("PaymentId");
-                    newPay.setPaymentId(paymentId);
-                    newPay.setOrderId(orderId);
-                    newPay.setStatus("subscription_init");
+        Map<String, Object> responseData = restTemplate.postForObject(url, data, Map.class);
 
-                    payRepository.save(newPay);
-
-                    chargeRecurrentPayment(paymentId, pay.getRebillId());
-                } else {
-                    throw new RuntimeException("Ошибка инициализации платежа: " + responseJson.get("Message"));
-                }
-            }
+        if (responseData != null && Boolean.TRUE.equals(responseData.get("Success"))) {
+            System.out.println("Charge successful: " + responseData);
         } else {
-            throw new RuntimeException("Ошибка запроса: " + response.getBody());
+            throw new RuntimeException("Ошибка charge: " + responseData.get("Message"));
         }
     }
-
-    private void chargeRecurrentPayment(String paymentId, String rebillId) throws JsonProcessingException, NoSuchAlgorithmException {
-        Map<String, Object> chargeData = new HashMap<>();
-        chargeData.put("TerminalKey", terminalKey);
-        chargeData.put("PaymentId", paymentId);
-        chargeData.put("RebillId", rebillId);
-
-        Map<String, Object> chargeTokenData = new HashMap<>();
-        chargeTokenData.put("TerminalKey", terminalKey);
-        chargeTokenData.put("PaymentId", paymentId);
-        chargeTokenData.put("RebillId", rebillId);
-        chargeTokenData.put("Password", secretKey);
-
-        chargeData.put("Token", generateToken(chargeTokenData));
-
-        String chargeUrl = "https://securepay.tinkoff.ru/v2/Charge";
-        ResponseEntity<String> chargeResponse = restTemplate.exchange(chargeUrl, HttpMethod.POST, new HttpEntity<>(chargeData), String.class);
-
-        if (chargeResponse.getStatusCode() == HttpStatus.OK) {
-            String chargeResponseData = chargeResponse.getBody();
-            if (chargeResponseData != null) {
-                Map chargeResponseJson = new ObjectMapper().readValue(chargeResponseData, Map.class);
-                if ("Success".equals(chargeResponseJson.get("Success"))) {
-                    System.out.println("Рекуррентный платеж успешно проведен.");
-                } else {
-                    System.out.println("Ошибка рекуррентного платежа: " + chargeResponseJson.get("Message"));
-                }
-            }
-        } else {
-            System.out.println("Ошибка запроса на рекуррентный платеж: " + chargeResponse.getBody());
-        }
-    }
-
     /**
      * Генерация токена (SHA-256) для запроса
      * @param data данные для токенизации
@@ -397,7 +340,6 @@ public class PaymentService {
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(entry -> concatenatedValues.append(entry.getValue()));
 
-        // Генерация токена с использованием SHA-256
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hashBytes = digest.digest(concatenatedValues.toString().getBytes());
         StringBuilder hexString = new StringBuilder();

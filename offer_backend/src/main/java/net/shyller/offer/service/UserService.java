@@ -104,7 +104,7 @@ public class UserService {
     }
 
 
-    private User getById(UUID id) {
+    public User getById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Пользователь с id %s не найден", id)));
     }
@@ -131,4 +131,10 @@ public class UserService {
         }
     }
 
+    public void updateSubcription(User user) {
+        OffsetDateTime now = OffsetDateTime.now();
+
+        user.setSubscriptionExpiresAt(now.plusMonths(1));
+        user.setRoles(Set.of(roleService.getByName(RoleName.ROLE_PAID_USER)));
+    }
 }

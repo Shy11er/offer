@@ -48,6 +48,7 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/swagger-resources/*",
                         "/objects/{id}",
+                        "/pay/**",
                         "/v3/api-docs/**",
                         "/actuator/health/**")
                     .permitAll()
@@ -65,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5174", "https://docroom.ru"));
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);

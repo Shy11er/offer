@@ -31,17 +31,17 @@ export const getMe = async (): Promise<UserDto> => {
 };
 
 
-export const createPay = async (user_id: number, user_email: string, back_url: string) => {
-    const response = await instance.get(`/pay/init?user_id=${user_id}&user_email=${user_email}&back_url=${back_url}`);
+export const createPay = async (userId: number, userEmail: string, backUrl: string) => {
+    const response = await instance.post(`/pay/init?userId=${userId}&userEmail=${userEmail}&backUrl=${backUrl}`);
     return response.data
 };
 
-export const checkPay = async (user_id: number) => {
-    const response = await instance.get(`/pay/check?user_id=${user_id}`);
+export const checkPay = async (userId: number) => {
+    const response = await instance.get(`/pay/check?userId=${userId}`);
     return response.data
 };
 
-// export const cancelSubscription = async (user_id: number) => {
-//     const response = await instance.get(`/pay/cancel?user_id=${user_id}`);
-//     return response.data
-// };
+export const cancelSubscriptionT = async (userId: number) => {
+    const response = await instance.get(`/pay/cancel?userId=${userId}`);
+    return response.data
+};

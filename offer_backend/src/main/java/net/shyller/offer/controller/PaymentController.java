@@ -1,13 +1,11 @@
 package net.shyller.offer.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import net.shyller.offer.db.domain.Pay;
-import net.shyller.offer.dto.PaymentRequest;
 import net.shyller.offer.service.PaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,24 +17,10 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/pay")
-@SecurityRequirement(name = "JWT")
 @Tag(name = "Контроллер платежей", description = "Обслуживает платежи")
 public class PaymentController {
 
     private final PaymentService paymentService;
-
-//    @ResponseStatus(HttpStatus.OK)
-//    @Operation(summary = "Создание токена оплаты")
-//    @ApiResponses(value = {
-//            @ApiResponse(
-//                    responseCode = "200",
-//                    description = "Создание токена оплаты"
-//            )
-//    })
-//    @PostMapping("/create")
-//    public String createPaymentToken(@RequestBody PaymentRequest paymentRequest) throws NoSuchAlgorithmException {
-//        return paymentService.createPaymentToken(paymentRequest);
-//    }
 
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Создание токена оплаты")
@@ -84,7 +68,7 @@ public class PaymentController {
             )
     })
     @GetMapping("/cancel")
-    public Pay cancelPayment(@RequestParam("userId") UUID userId) {
+    public String cancelPayment(@RequestParam("userId") UUID userId) {
         return paymentService.cancelPayment(userId);
     }
 
@@ -103,15 +87,16 @@ public class PaymentController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получение статуса оплаты")
+    @Operation(summary = "")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Проверка статуса оплаты"
+                    description = ""
             )
     })
-    @GetMapping("/status/{paymentId}")
-    public String getPaymentStatus(@PathVariable String paymentId) throws NoSuchAlgorithmException {
-        return paymentService.getPaymentStatus(paymentId);
+    @PostMapping("/charge")
+    public String charge() throws NoSuchAlgorithmException, JsonProcessingException {
+        paymentService.charge();
+        return "ok";
     }
 }
