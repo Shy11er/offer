@@ -1,9 +1,9 @@
-import {Button, Checkbox, Text} from '@gravity-ui/uikit';
+import {Button, Checkbox, Text, TextInput} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import {useNavigate} from 'react-router-dom';
-import {cancelSubscription, getMe} from '../../api/user';
+import {cancelSubscription, createPay, getMe} from '../../api/user';
 import {UserList} from '../../components/UserList';
 import './Profile.scss';
 
@@ -13,6 +13,7 @@ export const Profile: React.FC = () => {
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [agreements, setAgreements] = useState([false, false, false, false]);
+    const [email, setEmail] = useState<string>(''); // Локальное состояние для email
     const [showCancelModal, setShowCancelModal] = useState(false);
 
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ export const Profile: React.FC = () => {
     }, []);
 
     if (loading) return <div className={b()}>Загрузка...</div>;
+
     const isAdmin = user?.roles && user?.roles?.includes('ROLE_ADMIN');
 
     if (isAdmin) {
@@ -41,6 +43,7 @@ export const Profile: React.FC = () => {
             </div>
         );
     }
+
     const hasPaidRole = user?.roles && user?.roles?.includes('ROLE_PAID_USER');
     const expiresAt = user?.subscriptionExpiresAt ? new Date(user.subscriptionExpiresAt) : null;
     const isSubscriptionActive = hasPaidRole && expiresAt && expiresAt > new Date();
@@ -56,8 +59,29 @@ export const Profile: React.FC = () => {
         setAgreements(newAgreements);
     };
 
-    const handleBuy = () => {
-        toast.error('Покупка пока что недоступна');
+    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(event.target.value);
+    };
+
+    const handleBuy = async () => {
+        if (!email) {
+            toast.error('Пожалуйста, введите ваш email');
+            return;
+        }
+
+        if (agreements.every((agreement) => agreement)) {
+            try {
+                const backUrl = window.location.origin + '/profile';
+                const paymentData = await createPay(user.id, email, backUrl); // Передаем email в запрос
+                if (paymentData.url) {
+                    window.location.href = paymentData.url;
+                }
+            } catch (error) {
+                toast.error('Ошибка при создании ссылки для оплаты');
+            }
+        } else {
+            toast.error('Не все соглашения подтверждены');
+        }
     };
 
     return (
@@ -95,6 +119,18 @@ export const Profile: React.FC = () => {
                     Doc Room – сервис для быстрого создания и подписания оферты в сфере посуточного
                     бронирования
                 </Text>
+
+                {!isSubscriptionActive && (
+                    <TextInput
+                        placeholder="Введите ваш email"
+                        className={b('input')}
+                        size="xl"
+                        type="email"
+                        value={email}
+                        style={{margin: '20px 0'}}
+                        onChange={handleEmailChange}
+                    />
+                )}
 
                 {!isSubscriptionActive && (
                     <div className={b('checkboxes')}>
@@ -141,7 +177,7 @@ export const Profile: React.FC = () => {
                         width="max"
                         className={b('submit')}
                         onClick={handleBuy}
-                        disabled={!agreements.every((agreement) => agreement)}
+                        disabled={!email || !agreements.every((agreement) => agreement)} // Добавляем проверку на email
                     >
                         Оформить за 950 руб/мес
                     </Button>
