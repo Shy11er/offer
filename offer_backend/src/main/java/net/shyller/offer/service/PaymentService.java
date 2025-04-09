@@ -72,7 +72,7 @@ public class PaymentService {
         data.put("Description", description);
         data.put("SuccessURL", successUrl);
         data.put("FailURL", failUrl);
-        data.put("NotificationURL", String.format("%s/api/pay/notification", appUrl));
+        data.put("NotificationURL", String.format("%s/pay/notification", appUrl));
         data.put("Recurrent", "Y");
 
         Map<String, Object> dataForToken = new HashMap<>();
@@ -82,7 +82,7 @@ public class PaymentService {
         dataForToken.put("Description", description);
         dataForToken.put("SuccessURL", successUrl);
         dataForToken.put("FailURL", failUrl);
-        dataForToken.put("NotificationURL", String.format("%s/api/pay/notification", appUrl));
+        dataForToken.put("NotificationURL", String.format("%s/pay/notification", appUrl));
         dataForToken.put("Password", secretKey);
         dataForToken.put("Recurrent", "Y");
 
@@ -266,7 +266,7 @@ public class PaymentService {
         data.put("Description", description);
         data.put("SuccessURL", successUrl);
         data.put("FailURL", failUrl);
-        data.put("NotificationURL", String.format("%s/api/pay/notification", appUrl));
+        data.put("NotificationURL", String.format("%s/pay/notification", appUrl));
         data.put("Recurrent", "Y");
 
         Map<String, Object> dataForToken = new HashMap<>();
@@ -276,7 +276,7 @@ public class PaymentService {
         dataForToken.put("Description", description);
         dataForToken.put("SuccessURL", successUrl);
         dataForToken.put("FailURL", failUrl);
-        dataForToken.put("NotificationURL", String.format("%s/api/pay/notification", appUrl));
+        dataForToken.put("NotificationURL", String.format("%s/pay/notification", appUrl));
         dataForToken.put("Password", secretKey);
         dataForToken.put("Recurrent", "Y");
 
